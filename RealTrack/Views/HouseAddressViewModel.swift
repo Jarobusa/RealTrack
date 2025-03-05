@@ -9,12 +9,12 @@ import SwiftData
 import SwiftUI
 
 final class AddressViewModel: ObservableObject {
-    @Published var addresses: [HouseAddress] = []  // ✅ Published to update UI
+    @Published var addresses: [HouseAddress] = []
     private var modelContext: ModelContext
 
     init(modelContext: ModelContext) {
         self.modelContext = modelContext
-        fetchAddresses()
+      //  fetchAddresses()
     }
 
     /// Fetch all addresses from SwiftData
@@ -22,9 +22,10 @@ final class AddressViewModel: ObservableObject {
         let fetchDescriptor = FetchDescriptor<HouseAddress>(sortBy: [SortDescriptor(\.timestamp, order: .reverse)])
         do {
             addresses = try modelContext.fetch(fetchDescriptor)
-            print("✅ Successfully fetched \(addresses.count) addresses")
+            print("✅ Fetched addresses: \(addresses.map { $0.address1 ?? "N/A" })")
         } catch {
-            print("❌ Error fetching addresses: \(error)")
+            print("❌ Fetch error: \(error.localizedDescription)")
+            addresses = []
         }
         
         if let storeURL = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first?.appendingPathComponent("default.store") {

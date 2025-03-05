@@ -54,10 +54,10 @@ struct ContentView: View {
 }
 
 #Preview {
-    do {
-        let previewContainer = try ModelContainer(for: Schema([HouseAddress.self]), configurations: [ModelConfiguration(isStoredInMemoryOnly: true)])
-        return ContentView(modelContext: previewContainer.mainContext)
-    } catch {
-        fatalError("Failed to create preview ModelContainer: \(error)")
-    }
+    ContentView(modelContext: try! ModelContext(ModelContainer(for: HouseAddress.self, configurations: ModelConfiguration(isStoredInMemoryOnly: true))))
+        .environmentObject({
+            let vm = AddressViewModel(modelContext: try! ModelContext(ModelContainer(for: HouseAddress.self, configurations: ModelConfiguration(isStoredInMemoryOnly: true))))
+            vm.addresses = [HouseAddress(address1: "Mock St", city: "Mock City", state: "MC", zip: "99999")]
+            return vm
+        }())
 }

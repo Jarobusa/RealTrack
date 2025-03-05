@@ -10,14 +10,14 @@ import SwiftData
 
 @main
 struct RealTrackApp: App {
-    let sharedModelContainer: ModelContainer  // ✅ Declare ModelContainer
+    let sharedModelContainer: ModelContainer
 
     init() {
-        let schema = Schema([HouseAddress.self])  // ✅ Define the schema
-        let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
-
         do {
+            let schema = Schema([HouseAddress.self])
+            let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
             sharedModelContainer = try ModelContainer(for: schema, configurations: [modelConfiguration])
+            print("✅ ModelContainer initialized successfully")
         } catch {
             fatalError("❌ Could not create ModelContainer: \(error)")
         }
@@ -25,8 +25,8 @@ struct RealTrackApp: App {
 
     var body: some Scene {
         WindowGroup {
-            ContentView(modelContext: sharedModelContainer.mainContext)  // ✅ Inject context
-                .modelContainer(sharedModelContainer)  // ✅ Ensure ModelContainer is available
+            ContentView(modelContext: sharedModelContainer.mainContext)
+                .modelContainer(sharedModelContainer)
         }
     }
 }
