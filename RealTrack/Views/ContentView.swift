@@ -4,7 +4,6 @@
 //
 //  Created by Robert Williams on 3/2/25.
 //
-
 import SwiftUI
 import SwiftData
 
@@ -12,6 +11,7 @@ struct ContentView: View {
     @Environment(\.modelContext) private var modelContext
     @StateObject private var viewModel: AddressViewModel
     @State private var selectedAddress: AddressModel?
+    @State private var isAddingAddress = false
     @State private var isEditing = false
     @State private var selectedSortOption: SortOption = .city  // ✅ Track sorting option
 
@@ -30,11 +30,11 @@ struct ContentView: View {
     var body: some View {
         NavigationView {
             VStack {
-                VStack(alignment: .leading, spacing: 5) {  // ✅ Sort label container
-                    Text("Sort by")  // ✅ Added label
+                VStack(alignment: .leading, spacing: 5) {
+                    Text("Sort by")
                         .font(.headline)
                         .padding(.leading)
-                    
+
                     Picker("Sort by", selection: $selectedSortOption) {
                         ForEach(SortOption.allCases) { option in
                             Text(option.rawValue).tag(option)
@@ -44,8 +44,10 @@ struct ContentView: View {
                     .padding(.horizontal)
                 }
                 .padding(.top)
+
                 List {
-                    ForEach(sortedAddresses, id: \.timestamp) { address in
+                    ForEach(sortedAddresses.indices, id: \.self) { index in
+                        let address = sortedAddresses[index]
                         Button {
                             selectedAddress = address
                             isEditing = true
@@ -57,17 +59,23 @@ struct ContentView: View {
                                     .foregroundColor(.gray)
                             }
                         }
+                        .swipeActions {
+                            Button(role: .destructive) {
+                                deleteAddress(at: index)  // ✅ Pass the correct index
+                            } label: {
+                                Label("Delete", systemImage: "trash")
+                            }
+                        }
                     }
-                    .onDelete(perform: viewModel.deleteAddress)
                 }
             }
             .navigationTitle("Addresses")
             .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
+                ToolbarItem(placement: .topBarTrailing) {
                     EditButton()
                 }
-                ToolbarItem {
-                    Button(action: addAddress) {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button(action: { isAddingAddress = true }) {
                         Label("Add Address", systemImage: "plus")
                     }
                 }
@@ -78,6 +86,28 @@ struct ContentView: View {
         }
         .sheet(item: $selectedAddress) { address in
             EditAddressView(address: address)
+        }
+        .sheet(isPresented: $isAddingAddress) {
+            AddAddressView(viewModel: viewModel)
+        }
+    }
+
+    private func deleteAddress(at index: Int) {
+        let addressToDelete = sortedAddresses[index]  // ✅ Get correct address
+        print("Deleting Address ID:", addressToDelete.id)
+
+        // ✅ Find the exact instance in SwiftData and delete it
+        do {
+            if let originalAddress = viewModel.addresses.first(where: { $0.id == addressToDelete.id }) {
+                modelContext.delete(originalAddress)  // ✅ Remove from SwiftData
+                try modelContext.save()  // ✅ Save changes
+                print("✅ Address deleted successfully!")
+                viewModel.fetchAddresses()  // ✅ Refresh list
+            } else {
+                print("❌ Address not found in database!")
+            }
+        } catch {
+            print("❌ Error deleting address: \(error)")
         }
     }
 
@@ -90,12 +120,7 @@ struct ContentView: View {
             return viewModel.addresses.sorted { ($0.zip ?? "") < ($1.zip ?? "") }
         }
     }
-
-    private func addAddress() {
-        viewModel.addAddress(address1: "123 Main St", address2: nil, city: "New York", state: "NY", zip: "10001")
-    }
 }
-
 #Preview {
     ContentView(modelContext: try! ModelContext(ModelContainer(for: AddressModel.self, configurations: ModelConfiguration(isStoredInMemoryOnly: true))))
         .environmentObject({
