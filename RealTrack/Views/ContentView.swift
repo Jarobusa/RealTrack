@@ -11,8 +11,17 @@ import SwiftData
 struct ContentView: View {
     @Environment(\.modelContext) private var modelContext
     @StateObject private var viewModel: AddressViewModel
-    @State private var selectedAddress: AddressModel?  // ✅ Updated type
+    @State private var selectedAddress: AddressModel?
     @State private var isEditing = false
+    @State private var selectedSortOption: SortOption = .city  // ✅ Track sorting option
+
+    /// Enum for sorting options
+    enum SortOption: String, CaseIterable, Identifiable {
+        case city = "City"
+        case zipCode = "Zip Code"
+
+        var id: String { self.rawValue }
+    }
 
     init(modelContext: ModelContext) {
         _viewModel = StateObject(wrappedValue: AddressViewModel(modelContext: modelContext))
@@ -20,20 +29,39 @@ struct ContentView: View {
 
     var body: some View {
         NavigationView {
-            List {
-                ForEach(viewModel.addresses, id: \.timestamp) { address in
-                    Button {
-                        selectedAddress = address
-                        isEditing = true
-                    } label: {
-                        VStack(alignment: .leading) {
-                            Text(address.address1 ?? "N/A")
-                            Text(address.city ?? "N/A").font(.subheadline).foregroundColor(.gray)
+            VStack {
+                VStack(alignment: .leading, spacing: 5) {  // ✅ Sort label container
+                    Text("Sort by")  // ✅ Added label
+                        .font(.headline)
+                        .padding(.leading)
+                    
+                    Picker("Sort by", selection: $selectedSortOption) {
+                        ForEach(SortOption.allCases) { option in
+                            Text(option.rawValue).tag(option)
                         }
                     }
+                    .pickerStyle(.segmented)
+                    .padding(.horizontal)
                 }
-                .onDelete(perform: viewModel.deleteAddress)
+                .padding(.top)
+                List {
+                    ForEach(sortedAddresses, id: \.timestamp) { address in
+                        Button {
+                            selectedAddress = address
+                            isEditing = true
+                        } label: {
+                            VStack(alignment: .leading) {
+                                Text(address.address1 ?? "N/A")
+                                Text("\(address.city ?? "N/A"), \(address.zip ?? "N/A")")
+                                    .font(.subheadline)
+                                    .foregroundColor(.gray)
+                            }
+                        }
+                    }
+                    .onDelete(perform: viewModel.deleteAddress)
+                }
             }
+            .navigationTitle("Addresses")
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     EditButton()
@@ -49,7 +77,17 @@ struct ContentView: View {
             viewModel.fetchAddresses()
         }
         .sheet(item: $selectedAddress) { address in
-            EditAddressView(address: address)  // ✅ Open Edit View
+            EditAddressView(address: address)
+        }
+    }
+
+    /// ✅ Computed property to sort addresses dynamically
+    private var sortedAddresses: [AddressModel] {
+        switch selectedSortOption {
+        case .city:
+            return viewModel.addresses.sorted { ($0.city ?? "") < ($1.city ?? "") }
+        case .zipCode:
+            return viewModel.addresses.sorted { ($0.zip ?? "") < ($1.zip ?? "") }
         }
     }
 
@@ -62,9 +100,11 @@ struct ContentView: View {
     ContentView(modelContext: try! ModelContext(ModelContainer(for: AddressModel.self, configurations: ModelConfiguration(isStoredInMemoryOnly: true))))
         .environmentObject({
             let vm = AddressViewModel(modelContext: try! ModelContext(ModelContainer(for: AddressModel.self, configurations: ModelConfiguration(isStoredInMemoryOnly: true))))
-            vm.addresses = [AddressModel(address1: "Mock St", city: "Mock City", state: "MC", zip: "99999")]
+            vm.addresses = [
+                AddressModel(address1: "Mock St", city: "Mock City", state: "MC", zip: "99999"),
+                AddressModel(address1: "Another St", city: "Alpha Town", state: "AT", zip: "11111"),
+                AddressModel(address1: "Main Road", city: "Beta City", state: "BC", zip: "22222")
+            ]
             return vm
         }())
 }
-
-
