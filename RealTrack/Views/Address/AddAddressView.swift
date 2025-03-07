@@ -19,6 +19,8 @@ struct AddAddressView: View {
     @State private var state: String = ""
     @State private var zip: String = ""
     
+    @FocusState private var isAddress1Focused: Bool  // ✅ Track focus state
+    
     private var isSaveEnabled: Bool {
         !address1.trimmingCharacters(in: .whitespaces).isEmpty &&
         !city.trimmingCharacters(in: .whitespaces).isEmpty &&
@@ -31,10 +33,11 @@ struct AddAddressView: View {
             Form {
                 Section(header: Text("Address Details")) {
                     TextField("Address 1", text: $address1, prompt: Text("123 Main St").foregroundColor(.gray))
+                        .focused($isAddress1Focused)  // ✅ Focused when view appears
                     TextField("Address 2", text: $address2, prompt: Text("Apt 4B").foregroundColor(.gray))
-                    TextField("City", text: $city, prompt: Text("New York").foregroundColor(.gray))
-                    TextField("State", text: $state, prompt: Text("NY").foregroundColor(.gray))
-                    TextField("Zip Code", text: $zip, prompt: Text("10001").foregroundColor(.gray))
+                    TextField("City", text: $city, prompt: Text("Atlanta").foregroundColor(.gray))
+                    TextField("State", text: $state, prompt: Text("GA").foregroundColor(.gray))
+                    TextField("Zip Code", text: $zip, prompt: Text("30310").foregroundColor(.gray))
                 }
             }
             .navigationTitle("Add Address")
@@ -54,6 +57,11 @@ struct AddAddressView: View {
                     .disabled(!isSaveEnabled)
                 }
             }
+            .onAppear {
+                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {  // ✅ Slight delay to ensure UI is ready
+                     isAddress1Focused = true  // ✅ Automatically focus on address1
+                 }
+             }
         }
     }
     
