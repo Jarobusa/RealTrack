@@ -14,7 +14,7 @@ struct RealTrackApp: App {
 
     init() {
         do {
-            let schema = Schema([HouseAddress.self])
+            let schema = Schema([AddressModel.self])
             let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
             sharedModelContainer = try ModelContainer(for: schema, configurations: [modelConfiguration])
             print("✅ ModelContainer initialized successfully")

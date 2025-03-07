@@ -9,8 +9,8 @@ import Foundation
 import SwiftData
 
 @Model
-final class HouseAddress {
-    var address1: String?  // ✅ Fixed typo (addres1 → address1)
+final class AddressModel {
+    var address1: String?  
     var address2: String?
     var city: String?
     var state: String?

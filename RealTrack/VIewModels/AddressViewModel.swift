@@ -9,7 +9,7 @@ import SwiftData
 import SwiftUI
 
 final class AddressViewModel: ObservableObject {
-    @Published var addresses: [HouseAddress] = []
+    @Published var addresses: [AddressModel] = []
     private var modelContext: ModelContext
 
     init(modelContext: ModelContext) {
@@ -19,7 +19,7 @@ final class AddressViewModel: ObservableObject {
 
     /// Fetch all addresses from SwiftData
     func fetchAddresses() {
-        let fetchDescriptor = FetchDescriptor<HouseAddress>(sortBy: [SortDescriptor(\.timestamp, order: .reverse)])
+        let fetchDescriptor = FetchDescriptor<AddressModel>(sortBy: [SortDescriptor(\.timestamp, order: .reverse)])
         do {
             addresses = try modelContext.fetch(fetchDescriptor)
             print("✅ Fetched addresses: \(addresses.map { $0.address1 ?? "N/A" })")
@@ -35,7 +35,7 @@ final class AddressViewModel: ObservableObject {
 
     /// Add a new address
     func addAddress(address1: String?, address2: String?, city: String?, state: String?, zip: String?) {
-        let newAddress = HouseAddress(address1: address1, address2: address2, city: city, state: state, zip: zip, timestamp: Date())
+        let newAddress = AddressModel(address1: address1, address2: address2, city: city, state: state, zip: zip, timestamp: Date())
 
         print("📌 Attempting to insert: \(newAddress)")
 

@@ -5,13 +5,14 @@
 //  Created by Robert Williams on 3/2/25.
 //
 
-import Foundation
-import SwiftData
 import SwiftUI
+import SwiftData
 
 struct ContentView: View {
     @Environment(\.modelContext) private var modelContext
     @StateObject private var viewModel: AddressViewModel
+    @State private var selectedAddress: AddressModel?  // ✅ Updated type
+    @State private var isEditing = false
 
     init(modelContext: ModelContext) {
         _viewModel = StateObject(wrappedValue: AddressViewModel(modelContext: modelContext))
@@ -21,8 +22,9 @@ struct ContentView: View {
         NavigationView {
             List {
                 ForEach(viewModel.addresses, id: \.timestamp) { address in
-                    NavigationLink {
-                        Text("Address at \(address.timestamp.formatted())")
+                    Button {
+                        selectedAddress = address
+                        isEditing = true
                     } label: {
                         VStack(alignment: .leading) {
                             Text(address.address1 ?? "N/A")
@@ -46,6 +48,9 @@ struct ContentView: View {
         .onAppear {
             viewModel.fetchAddresses()
         }
+        .sheet(item: $selectedAddress) { address in
+            EditAddressView(address: address)  // ✅ Open Edit View
+        }
     }
 
     private func addAddress() {
@@ -54,10 +59,12 @@ struct ContentView: View {
 }
 
 #Preview {
-    ContentView(modelContext: try! ModelContext(ModelContainer(for: HouseAddress.self, configurations: ModelConfiguration(isStoredInMemoryOnly: true))))
+    ContentView(modelContext: try! ModelContext(ModelContainer(for: AddressModel.self, configurations: ModelConfiguration(isStoredInMemoryOnly: true))))
         .environmentObject({
-            let vm = AddressViewModel(modelContext: try! ModelContext(ModelContainer(for: HouseAddress.self, configurations: ModelConfiguration(isStoredInMemoryOnly: true))))
-            vm.addresses = [HouseAddress(address1: "Mock St", city: "Mock City", state: "MC", zip: "99999")]
+            let vm = AddressViewModel(modelContext: try! ModelContext(ModelContainer(for: AddressModel.self, configurations: ModelConfiguration(isStoredInMemoryOnly: true))))
+            vm.addresses = [AddressModel(address1: "Mock St", city: "Mock City", state: "MC", zip: "99999")]
             return vm
         }())
 }
+
+
