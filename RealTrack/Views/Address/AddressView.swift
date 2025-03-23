@@ -155,3 +155,25 @@ struct AddressAnnotation: Identifiable {
     let id = UUID()
     let coordinate: CLLocationCoordinate2D
 }
+
+#Preview {
+    let container = try! ModelContainer(
+        for: AddressModel.self,
+        configurations: ModelConfiguration(isStoredInMemoryOnly: true)
+    )
+
+    let sampleAddress = AddressModel(
+        address1: "1 Infinite Loop",
+        address2: nil,
+        city: "Cupertino",
+        state: "CA",
+        zip: "95014"
+    )
+
+    container.mainContext.insert(sampleAddress)
+
+    return NavigationStack {
+        AddressView(address: sampleAddress)
+            .modelContainer(container)
+    }
+}
