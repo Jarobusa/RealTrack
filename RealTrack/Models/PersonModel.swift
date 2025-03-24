@@ -11,7 +11,7 @@ import SwiftData
 @Model
 final class PersonModel {
     @Attribute(.unique) var id: UUID  // Unique identifier
-    var firstName: String            // ✅ Required
+    var firstName: String?           // ✅ Required
     var lastName: String?            // Optional
     var mobilePhone: String?         // Optional
     var workPhone: String?           // Optional
@@ -20,7 +20,7 @@ final class PersonModel {
     @Attribute(.unique) var ssn: String?  // Optional but must be unique if provided
 
     // Link to PersonTypeModel (many-to-one)
-    var personType: PersonTypeModel
+    var personType: PersonTypeModel?
 
     init(
         id: UUID = UUID(),

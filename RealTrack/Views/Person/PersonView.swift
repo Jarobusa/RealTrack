@@ -18,12 +18,12 @@ struct PersonView: View {
         NavigationStack {
             List(people, id: \.id) { person in
                 VStack(alignment: .leading) {
-                    Text("\(person.firstName) \(person.lastName ?? "")")
+                    Text("\(person.firstName ?? "") \(person.lastName ?? "")")
                         .font(.headline)
                     if let phone = person.mobilePhone {
                         Text("📱 \(phone)")
                     }
-                    if let type = person.personType.name {
+                    if let type = person.personType?.name {
                         Text("Type: \(type)")
                             .font(.subheadline)
                             .foregroundStyle(.secondary)
