@@ -12,14 +12,13 @@ import MapKit
 struct AddressView: View {
     let address: AddressModel
     @State private var isEditing = false
+    @State private var isShowingShareSheet = false
     @State private var region: MKCoordinateRegion = MKCoordinateRegion(
         center: CLLocationCoordinate2D(latitude: 37.3349, longitude: -122.00902),
         span: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
     )
-    @State private var coordinateFound = false
-    @State private var isShowingShareSheet = false
 
-    // Computed property to format the address in USPS postal style.
+    // Computed USPS-style address
     var fullAddress: String {
         var lines: [String] = []
         if let line1 = address.address1, !line1.isEmpty {
@@ -49,25 +48,26 @@ struct AddressView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
-                // Address display in monospaced, bold font
                 Text(fullAddress)
                     .font(.system(.body, design: .monospaced).bold())
                     .multilineTextAlignment(.leading)
-                
-                // Embedded live map using the new Marker API
-                Map(coordinateRegion: $region, annotationItems: [AddressAnnotation(coordinate: region.center)]) { item in
-                    MapAnnotation(coordinate: item.coordinate) {
-                        Image(systemName: "mappin.circle.fill")
-                            .foregroundStyle(.red)
-                            .mapStyle(.standard) // Forces 2D map, avoids 3D mesh tiles
+
+                let annotations = [AddressAnnotation(coordinate: region.center)]
+
+                Map(initialPosition: .region(region)) {
+                    ForEach(annotations) { item in
+                        Annotation(UUID().uuidString, coordinate: region.center) {
+                            Image(systemName: "mappin.circle.fill")
+                                .foregroundStyle(.red)
+                        }
                     }
                 }
+                .mapStyle(.standard)
+                .frame(height: 250)
+                .cornerRadius(10)                .mapStyle(.standard)
                 .frame(height: 250)
                 .cornerRadius(10)
-                .frame(height: 250)
-                .cornerRadius(10)
-                
-                // Buttons to open in Apple Maps and to share the address
+
                 HStack(spacing: 16) {
                     Button(action: openInMaps) {
                         Label("Open in Maps", systemImage: "map")
@@ -79,7 +79,7 @@ struct AddressView: View {
                     }
                 }
                 .font(.headline)
-                
+
                 Spacer()
             }
             .padding()
@@ -102,8 +102,7 @@ struct AddressView: View {
             geocodeAddress()
         }
     }
-    
-    // Opens Apple Maps with the geocoded location.
+
     private func openInMaps() {
         let addressString = fullAddress.replacingOccurrences(of: "\n", with: ", ")
         let geocoder = CLGeocoder()
@@ -118,8 +117,7 @@ struct AddressView: View {
             }
         }
     }
-    
-    // Geocodes the full address and updates the map region.
+
     private func geocodeAddress() {
         let addressString = fullAddress.replacingOccurrences(of: "\n", with: ", ")
         let geocoder = CLGeocoder()
@@ -131,7 +129,6 @@ struct AddressView: View {
                         center: location.coordinate,
                         span: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
                     )
-                    coordinateFound = true
                 }
             } else {
                 print("Error geocoding address for map: \(error?.localizedDescription ?? "Unknown error")")
@@ -140,7 +137,7 @@ struct AddressView: View {
     }
 }
 
-// MARK: - ShareSheet: Wrapper for UIActivityViewController
+// MARK: - ShareSheet for sharing the address
 struct ShareSheet: UIViewControllerRepresentable {
     var activityItems: [Any]
     var applicationActivities: [UIActivity]? = nil
@@ -155,26 +152,4 @@ struct ShareSheet: UIViewControllerRepresentable {
 struct AddressAnnotation: Identifiable {
     let id = UUID()
     let coordinate: CLLocationCoordinate2D
-}
-
-#Preview {
-    let container = try! ModelContainer(
-        for: AddressModel.self,
-        configurations: ModelConfiguration(isStoredInMemoryOnly: true)
-    )
-
-    let sampleAddress = AddressModel(
-        address1: "1 Infinite Loop",
-        address2: nil,
-        city: "Cupertino",
-        state: "CA",
-        zip: "95014"
-    )
-
-    container.mainContext.insert(sampleAddress)
-
-    return NavigationStack {
-        AddressView(address: sampleAddress)
-            .modelContainer(container)
-    }
 }
