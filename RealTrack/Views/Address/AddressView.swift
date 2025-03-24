@@ -59,6 +59,7 @@ struct AddressView: View {
                     MapAnnotation(coordinate: item.coordinate) {
                         Image(systemName: "mappin.circle.fill")
                             .foregroundStyle(.red)
+                            .mapStyle(.standard) // Forces 2D map, avoids 3D mesh tiles
                     }
                 }
                 .frame(height: 250)
