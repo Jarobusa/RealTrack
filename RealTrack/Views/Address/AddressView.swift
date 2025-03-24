@@ -11,13 +11,15 @@ import MapKit
 
 struct AddressView: View {
     let address: AddressModel
+    @State private var annotations: [AddressAnnotation] = []
     @State private var isEditing = false
     @State private var isShowingShareSheet = false
-    @State private var region: MKCoordinateRegion = MKCoordinateRegion(
-        center: CLLocationCoordinate2D(latitude: 37.3349, longitude: -122.00902),
-        span: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
+    @State private var cameraPosition: MapCameraPosition = .region(
+        MKCoordinateRegion(
+            center: CLLocationCoordinate2D(latitude: 37.3349, longitude: -122.00902),
+            span: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
+        )
     )
-
     // Computed USPS-style address
     var fullAddress: String {
         var lines: [String] = []
@@ -52,11 +54,9 @@ struct AddressView: View {
                     .font(.system(.body, design: .monospaced).bold())
                     .multilineTextAlignment(.leading)
 
-                let annotations = [AddressAnnotation(coordinate: region.center)]
-
-                Map(initialPosition: .region(region)) {
+                Map(position: $cameraPosition) {
                     ForEach(annotations) { item in
-                        Annotation(UUID().uuidString, coordinate: region.center) {
+                        Annotation(item.id.uuidString, coordinate: item.coordinate) {
                             Image(systemName: "mappin.circle.fill")
                                 .foregroundStyle(.red)
                         }
@@ -64,7 +64,11 @@ struct AddressView: View {
                 }
                 .mapStyle(.standard)
                 .frame(height: 250)
-                .cornerRadius(10)                .mapStyle(.standard)
+                .cornerRadius(10)
+                .mapStyle(.standard)
+                .frame(height: 250)
+                .cornerRadius(10)
+                .mapStyle(.standard)
                 .frame(height: 250)
                 .cornerRadius(10)
 
@@ -124,10 +128,14 @@ struct AddressView: View {
         geocoder.geocodeAddressString(addressString) { placemarks, error in
             if let placemark = placemarks?.first,
                let location = placemark.location {
+                let coord = location.coordinate
                 DispatchQueue.main.async {
-                    region = MKCoordinateRegion(
-                        center: location.coordinate,
-                        span: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
+                    annotations = [AddressAnnotation(coordinate: coord)]
+                    cameraPosition = .region(
+                        MKCoordinateRegion(
+                            center: coord,
+                            span: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
+                        )
                     )
                 }
             } else {
