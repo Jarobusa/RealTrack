@@ -17,7 +17,7 @@ struct AddressView: View {
     @State private var cameraPosition: MapCameraPosition = .region(
         MKCoordinateRegion(
             center: CLLocationCoordinate2D(latitude: 37.3349, longitude: -122.00902),
-            span: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
+            span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
         )
     )
     // Computed USPS-style address
@@ -131,7 +131,7 @@ struct AddressView: View {
                     cameraPosition = .region(
                         MKCoordinateRegion(
                             center: coord,
-                            span: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
+                            span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
                         )
                     )
                 }
