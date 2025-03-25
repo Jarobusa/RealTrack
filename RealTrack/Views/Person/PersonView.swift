@@ -20,7 +20,7 @@ struct PersonView: View {
                 VStack(alignment: .leading) {
                     Text("\(person.firstName ?? "") \(person.lastName ?? "")")
                         .font(.headline)
-                    if let phone = person.mobilePhone {
+                    if let phone = person.mobilePhone?.formattedAsPhone {
                         Text("📱 \(phone)")
                     }
                     if let type = person.personType?.name {

@@ -43,12 +43,6 @@ final class PersonModel {
     }
 }
 
-extension String {
-    func matches(_ regex: String) -> Bool {
-        return range(of: regex, options: .regularExpression) != nil
-    }
-}
-
 extension PersonModel {
     var isEINValid: Bool {
         guard let ein = ein else { return true }  // Optional is okay
