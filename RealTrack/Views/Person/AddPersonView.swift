@@ -10,9 +10,10 @@ import SwiftData
 
 struct AddPersonView: View {
     @Environment(\.dismiss) private var dismiss
-    @Environment(\.modelContext) private var context
-    @Query(sort: \PersonTypeModel.name) private var personTypes: [PersonTypeModel]
+    @Environment(\.modelContext) private var modelContext
+    @Query private var personTypes: [PersonTypeModel]
 
+    // Temporary form values
     @State private var firstName = ""
     @State private var lastName = ""
     @State private var mobilePhone = ""
@@ -21,93 +22,76 @@ struct AddPersonView: View {
     @State private var ssn = ""
     @State private var selectedType: PersonTypeModel?
 
-    var isEINValid: Bool {
-        ein.isEmpty || ein.matches(#"^\d{2}-\d{7}$"#)
-    }
-
-    var isSSNValid: Bool {
-        ssn.isEmpty || ssn.matches(#"^\d{3}-\d{2}-\d{4}$"#)
-    }
-
-    var canSave: Bool {
-        !firstName.isEmpty && isEINValid && isSSNValid && selectedType != nil
-    }
-
     var body: some View {
-        NavigationStack {
+        NavigationView {
             Form {
-                Section(header: Text("Basic Info")) {
-                    TextField("First Name *", text: $firstName)
+                // MARK: - Name Section
+                Section(header: Text("Name")) {
+                    TextField("First Name", text: $firstName)
                     TextField("Last Name", text: $lastName)
                 }
 
-                Section(header: Text("Phone Numbers")) {
+                // MARK: - Contact Info
+                Section(header: Text("Contact")) {
                     TextField("Mobile Phone", text: $mobilePhone)
                     TextField("Work Phone", text: $workPhone)
                 }
 
-                Section(header: Text("Identifiers")) {
-                    TextField("EIN (XX-XXXXXXX)", text: $ein)
-                        .autocapitalization(.none)
-                    if !isEINValid {
-                        Text("Invalid EIN format").foregroundColor(.red)
-                    }
-
-                    TextField("SSN (XXX-XX-XXXX)", text: $ssn)
-                        .autocapitalization(.none)
-                    if !isSSNValid {
-                        Text("Invalid SSN format").foregroundColor(.red)
-                    }
-                }
-
+                // MARK: - Person Type Picker
                 Section(header: Text("Person Type")) {
-                    Picker("Type", selection: $selectedType) {
-                        ForEach(personTypes, id: \.id) { type in
+                    Picker("Select Type", selection: $selectedType) {
+                        ForEach(personTypes) { type in
                             Text(type.name ?? "Unnamed").tag(type as PersonTypeModel?)
                         }
                     }
-                }
-            }
-            .navigationTitle("Add Person")
-            .toolbar {
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("Save") {
-                        let newPerson = PersonModel(
-                            firstName: firstName,
-                            lastName: lastName.isEmpty ? nil : lastName,
-                            mobilePhone: mobilePhone.isEmpty ? nil : mobilePhone,
-                            workPhone: workPhone.isEmpty ? nil : workPhone,
-                            ein: ein.isEmpty ? nil : ein,
-                            ssn: ssn.isEmpty ? nil : ssn,
-                            personType: selectedType!
-                        )
-                        context.insert(newPerson)
-                        dismiss()
-                    }
-                    .disabled(!canSave)
+                    .pickerStyle(.menu)
                 }
 
-                ToolbarItem(placement: .cancellationAction) {
+                // MARK: - Identifiers
+                Section(header: Text("Identifiers")) {
+                    TextField("EIN (##-#######)", text: $ein)
+                    TextField("SSN (###-##-####)", text: $ssn)
+                }
+
+                // MARK: - Actions
+                Section {
+                    Button("Save") {
+                        savePerson()
+                    }
+                    .disabled(firstName.isEmpty || selectedType == nil)
+
                     Button("Cancel", role: .cancel) {
                         dismiss()
                     }
                 }
             }
+            .navigationTitle("Add Person")
+            .onAppear {
+                if selectedType == nil {
+                    selectedType = personTypes.first
+                }
+            }
         }
     }
-}
 
+    private func savePerson() {
+        let person = PersonModel(
+            firstName: firstName,
+            lastName: lastName.isEmpty ? nil : lastName,
+            mobilePhone: mobilePhone.isEmpty ? nil : mobilePhone,
+            workPhone: workPhone.isEmpty ? nil : workPhone,
+            ein: ein.isEmpty ? nil : ein,
+            ssn: ssn.isEmpty ? nil : ssn,
+            personType: selectedType!
+        )
 
-#Preview {
-    let container = try! ModelContainer(for: PersonModel.self, PersonTypeModel.self, configurations: ModelConfiguration(isStoredInMemoryOnly: true))
+        modelContext.insert(person)
 
-    // Insert mock person types
-    let employeeType = PersonTypeModel(name: "Employee")
-    let contractorType = PersonTypeModel(name: "Contractor")
-
-    container.mainContext.insert(employeeType)
-    container.mainContext.insert(contractorType)
-
-    return AddPersonView()
-        .modelContainer(container)
+        do {
+            try modelContext.save()
+            dismiss()
+        } catch {
+            print("❌ Failed to save person: \(error)")
+        }
+    }
 }

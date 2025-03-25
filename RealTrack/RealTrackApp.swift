@@ -10,23 +10,38 @@ import SwiftData
 
 @main
 struct RealTrackApp: App {
-    let sharedModelContainer: ModelContainer
+    let persistenceController = PersistenceController.shared
 
     init() {
-        do {
-            let schema = Schema([AddressModel.self])
-            let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
-            sharedModelContainer = try ModelContainer(for: schema, configurations: [modelConfiguration])
-            print("✅ ModelContainer initialized successfully")
-        } catch {
-            fatalError("❌ Could not create ModelContainer: \(error)")
-        }
+        let context = persistenceController.container.mainContext
+        seedPersonTypesIfNeeded(in: context)
     }
-
+    
     var body: some Scene {
         WindowGroup {
-            ContentView(modelContext: sharedModelContainer.mainContext)
-                .modelContainer(sharedModelContainer)
+            ContentView()
+                .modelContainer(persistenceController.container)
         }
+    }
+}
+
+private func seedPersonTypesIfNeeded(in context: ModelContext) {
+    let requiredTypes = ["Owner", "Renter", "Handyman"]
+
+    let fetchDescriptor = FetchDescriptor<PersonTypeModel>()
+    let existingTypes = (try? context.fetch(fetchDescriptor)) ?? []
+
+    let existingNames = Set(existingTypes.compactMap { $0.name })
+
+    for name in requiredTypes where !existingNames.contains(name) {
+        let newType = PersonTypeModel(name: name)
+        context.insert(newType)
+    }
+
+    do {
+        try context.save()
+        print("✅ Person types seeded if needed.")
+    } catch {
+        print("❌ Error seeding person types: \(error)")
     }
 }
