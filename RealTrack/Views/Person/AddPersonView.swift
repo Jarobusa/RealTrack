@@ -31,7 +31,16 @@ struct AddPersonView: View {
 
                 Section(header: Text("Contact")) {
                     TextField("Mobile Phone", text: $mobilePhone)
+                        .keyboardType(.numberPad)
+                        .onChange(of: mobilePhone) {
+                            mobilePhone = formatPhone(mobilePhone)
+                        }
+
                     TextField("Work Phone", text: $workPhone)
+                        .keyboardType(.numberPad)
+                        .onChange(of: workPhone) {
+                            workPhone = formatPhone(workPhone)
+                        }
                 }
 
                 Section(header: Text("Person Type")) {
@@ -45,7 +54,16 @@ struct AddPersonView: View {
 
                 Section(header: Text("Identifiers")) {
                     TextField("EIN (##-#######)", text: $ein)
+                        .keyboardType(.numberPad)
+                        .onChange(of: ein) {
+                            ein = formatEIN(ein)
+                        }
+
                     TextField("SSN (###-##-####)", text: $ssn)
+                        .keyboardType(.numberPad)
+                        .onChange(of: ssn) {
+                            ssn = formatSSN(ssn)
+                        }
                 }
             }
             .navigationTitle("Add Person")
