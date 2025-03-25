@@ -8,7 +8,7 @@
 import SwiftUI
 import SwiftData
 
-struct PersonView: View {
+struct PersonsView: View {
     @Environment(\.modelContext) private var context
     @Query(sort: \PersonModel.firstName) private var people: [PersonModel]
 
@@ -78,6 +78,6 @@ struct PersonView: View {
     container.mainContext.insert(person1)
     container.mainContext.insert(person2)
 
-    return PersonView()
+    return PersonsView()
         .modelContainer(container)
 }

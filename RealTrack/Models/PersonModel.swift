@@ -10,14 +10,18 @@ import SwiftData
 
 @Model
 final class PersonModel {
-    @Attribute(.unique) var id: UUID  // Unique identifier
-    var firstName: String?           // ✅ Required
-    var lastName: String?            // Optional
-    var mobilePhone: String?         // Optional
-    var workPhone: String?           // Optional
+    @Attribute(.unique) var id: UUID
+    var firstName: String?
+    var lastName: String?
+    var mobilePhone: String?
+    var workPhone: String?
 
-    @Attribute(.unique) var ein: String?  // Optional but must be unique if provided
-    @Attribute(.unique) var ssn: String?  // Optional but must be unique if provided
+    @Attribute(.unique) var ein: String?
+    @Attribute(.unique) var ssn: String?  
+    
+    // ✅ One-to-many relationship
+    @Relationship(deleteRule: .cascade, inverse: \AddressModel.person)
+    var addresses: [AddressModel] = []
 
     // Link to PersonTypeModel (many-to-one)
     var personType: PersonTypeModel?

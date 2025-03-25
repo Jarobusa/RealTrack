@@ -18,7 +18,8 @@ struct PersistenceController {
         let schema = Schema([
             AddressModel.self,
             PersonModel.self,
-            PersonTypeModel.self  // ✅ Must be included here
+            PersonTypeModel.self,
+            AddressTypeModel.self 
         ])
         // Create a configuration with an option to store in memory (for testing) or on disk
         let configuration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: inMemory)
