@@ -18,7 +18,7 @@ struct ContentView: View {
                     Label("Addresses", systemImage: "house")
                 }
 
-            PersonsView()  // ✅ Make sure this struct exists
+            PeopleView()  // ✅ Make sure this struct exists
                 .tabItem {
                     Label("Person", systemImage: "person")
                 }
