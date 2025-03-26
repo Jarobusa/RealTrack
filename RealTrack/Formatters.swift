@@ -6,7 +6,7 @@
 //
 
 func formatPhone(_ text: String) -> String {
-    let digits = text.filter { $0.isNumber }
+    let digits = text.filter { $0.isNumber }.prefix(10)
     var result = ""
 
     let area = digits.prefix(3)

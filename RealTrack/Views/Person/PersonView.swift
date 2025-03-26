@@ -72,6 +72,9 @@ struct PersonView: View {
                 }
             }
         }
+        .sheet(isPresented: $isEditing) {
+            EditPersonView(person: person)
+        }
     }
 }
 
