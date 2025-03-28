@@ -10,7 +10,7 @@ import SwiftData
 
 struct AddPersonView: View {
     @Environment(\.dismiss) private var dismiss
-    @Environment(\.modelContext) private var modelContext
+    @ObservedObject var viewModel: PersonViewModel
     @Query private var personTypes: [PersonTypeModel]
 
     @State private var firstName = ""
@@ -90,7 +90,7 @@ struct AddPersonView: View {
     }
 
     private func savePerson() {
-        let person = PersonModel(
+        viewModel.addPerson(
             firstName: firstName,
             lastName: lastName.isEmpty ? nil : lastName,
             mobilePhone: mobilePhone.isEmpty ? nil : mobilePhone,
@@ -99,14 +99,6 @@ struct AddPersonView: View {
             ssn: ssn.isEmpty ? nil : ssn,
             personType: selectedType!
         )
-
-        modelContext.insert(person)
-
-        do {
-            try modelContext.save()
-            dismiss()
-        } catch {
-            print("❌ Failed to save person: \(error)")
-        }
+        dismiss()
     }
 }

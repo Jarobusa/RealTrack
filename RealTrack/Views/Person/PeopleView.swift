@@ -63,7 +63,7 @@ struct PeopleView: View {
                 }
             }
             .sheet(isPresented: $showingAddPerson) {
-                AddPersonView()
+                AddPersonView(viewModel: PersonViewModel(modelContext: context))
             }
         }
     }
