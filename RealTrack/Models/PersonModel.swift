@@ -15,6 +15,7 @@ final class PersonModel {
     var lastName: String?
     var mobilePhone: String?
     var workPhone: String?
+    var timestamp: Date
 
     @Attribute(.unique) var ein: String?
     @Attribute(.unique) var ssn: String?  
@@ -34,7 +35,8 @@ final class PersonModel {
         workPhone: String? = nil,
         ein: String? = nil,
         ssn: String? = nil,
-        personType: PersonTypeModel
+        personType: PersonTypeModel,
+        timestamp: Date = .now
     ) {
         self.id = id
         self.firstName = firstName
@@ -44,6 +46,7 @@ final class PersonModel {
         self.ein = ein
         self.ssn = ssn
         self.personType = personType
+        self.timestamp = timestamp
     }
 }
 

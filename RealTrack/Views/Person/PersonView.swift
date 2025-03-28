@@ -20,11 +20,11 @@ struct PersonView: View {
                     Text("\(person.firstName ?? "") \(person.lastName ?? "")")
                         .font(.title.bold())
 
-                    if let mobile = person.mobilePhone?.formattedAsPhone {
+                    if let mobile = person.mobilePhone?.formattedAsPhone, !(person.mobilePhone ?? "").isEmpty {
                         Label(mobile, systemImage: "phone")
                     }
 
-                    if let work = person.workPhone?.formattedAsPhone {
+                    if let work = person.workPhone?.formattedAsPhone, !(person.workPhone ?? "").isEmpty {
                         Label(work, systemImage: "phone.fill")
                     }
 
