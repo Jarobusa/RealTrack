@@ -28,6 +28,10 @@ struct PersonView: View {
                     if let work = person.workPhone?.formattedAsPhone, !(person.workPhone ?? "").isEmpty {
                         Label(work, systemImage: "phone.fill")
                     }
+                    
+                    if let email = person.email, !email.isEmpty {
+                        Label(email, systemImage: "envelope")
+                    }
 
                     if let type = person.personType?.name {
                         Label("Type: \(type)", systemImage: "person.crop.circle")
@@ -116,6 +120,7 @@ struct PersonView: View {
         lastName: "Doe",
         mobilePhone: "1234567890",
         workPhone: "9876543210",
+        email: "jane@example.com",
         ein: "12-3456789",
         ssn: "123-45-6789",
         personType: personType

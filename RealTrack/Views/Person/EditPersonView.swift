@@ -19,26 +19,57 @@ struct EditPersonView: View {
     @State private var lastName: String = ""
     @State private var mobilePhone: String = ""
     @State private var workPhone: String = ""
+    @State private var email: String = ""
     @State private var selectedType: PersonTypeModel?
     @State private var selectedAddress: AddressModel?
     @State private var isAddingAddress = false
-
+    @State private var showInvalidEmailWarning = false
+    @State private var hasChanges: Bool = false
+    @State private var isInitialized = false
+    
     var body: some View {
         NavigationStack {
             Form {
                 Section(header: Text("Name")) {
                     TextField("First Name", text: $firstName)
+                        .onChange(of: firstName) {
+                            if isInitialized { hasChanges = true }
+                        }
                     TextField("Last Name", text: $lastName)
+                        .onChange(of: lastName) {
+                            if isInitialized { hasChanges = true }
+                        }
                 }
 
                 Section(header: Text("Contact")) {
                     TextField("Mobile Phone", text: $mobilePhone)
                         .keyboardType(.numberPad)
                         .onChange(of: mobilePhone) { mobilePhone = formatPhone(mobilePhone) }
+                        .onChange(of: mobilePhone) {
+                            if isInitialized { hasChanges = true }
+                        }
 
                     TextField("Work Phone", text: $workPhone)
                         .keyboardType(.numberPad)
                         .onChange(of: workPhone) { workPhone = formatPhone(workPhone) }
+                        .onChange(of: workPhone) {
+                            if isInitialized { hasChanges = true }
+                        }
+                    
+                    TextField("Email", text: $email)
+                        .onChange(of: email) {
+                            email = email.lowercased()
+                            showInvalidEmailWarning = !email.isEmpty && !isValidEmail(email)
+                        }
+                        .onChange(of: email) {
+                            if isInitialized { hasChanges = true }
+                        }
+                    
+                    if showInvalidEmailWarning {
+                        Text("Please enter a valid email address.")
+                            .font(.caption)
+                            .foregroundColor(.red)
+                    }
                 }
 
                 Section(header: Text("Person Type")) {
@@ -47,6 +78,9 @@ struct EditPersonView: View {
                             Text(type.name ?? "Unknown")
                                 .tag(type as PersonTypeModel?)
                         }
+                    }
+                    .onChange(of: selectedType) {
+                        if isInitialized { hasChanges = true }
                     }
                 }
 
@@ -64,15 +98,24 @@ struct EditPersonView: View {
                     Button("Save") {
                         saveChanges()
                     }
-                    .disabled(firstName.isEmpty || selectedType == nil)
+                    .disabled(
+                        firstName.isEmpty ||
+                        selectedType == nil ||
+                        !hasChanges ||
+                        (!email.isEmpty && !isValidEmail(email))
+                    )
                 }
             }
             .onAppear {
+                isInitialized = false
                 firstName = person.firstName ?? ""
                 lastName = person.lastName ?? ""
                 mobilePhone = person.mobilePhone ?? ""
                 workPhone = person.workPhone ?? ""
+                email = person.email ?? ""
                 selectedType = person.personType
+                hasChanges = false
+                isInitialized = true
             }
             .sheet(item: $selectedAddress) { address in
                 EditAddressView(address: address)
@@ -84,14 +127,22 @@ struct EditPersonView: View {
     }
 
     private func saveChanges() {
+        guard email.isEmpty || isValidEmail(email) else {
+            showInvalidEmailWarning = true
+            return
+        }
+        showInvalidEmailWarning = false
+
         person.firstName = firstName
         person.lastName = lastName
         person.mobilePhone = mobilePhone
         person.workPhone = workPhone
+        person.email = email
         person.personType = selectedType
 
         do {
             try context.save()
+            hasChanges = false
             dismiss()
         } catch {
             print("❌ Error saving person: \(error)")
@@ -160,6 +211,7 @@ struct EditPersonView: View {
             lastName: "Doe",
             mobilePhone: "1234567890",
             workPhone: "9876543210",
+            email: "jane@example.com",
             ein: nil,
             ssn: nil,
             personType: personType

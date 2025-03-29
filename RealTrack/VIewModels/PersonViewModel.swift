@@ -35,6 +35,7 @@ final class PersonViewModel: ObservableObject {
         lastName: String? = nil,
         mobilePhone: String? = nil,
         workPhone: String? = nil,
+        email: String? = nil,
         ein: String? = nil,
         ssn: String? = nil,
         personType: PersonTypeModel,
@@ -45,6 +46,7 @@ final class PersonViewModel: ObservableObject {
             lastName: lastName,
             mobilePhone: mobilePhone,
             workPhone: workPhone,
+            email: email,
             ein: ein,
             ssn: ssn,
             personType: personType

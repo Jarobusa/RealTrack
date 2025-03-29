@@ -15,6 +15,7 @@ final class PersonModel {
     var lastName: String?
     var mobilePhone: String?
     var workPhone: String?
+    var email: String?  // New property
     var timestamp: Date
 
     @Attribute(.unique) var ein: String?
@@ -33,6 +34,7 @@ final class PersonModel {
         lastName: String? = nil,
         mobilePhone: String? = nil,
         workPhone: String? = nil,
+        email: String? = nil,  // Updated initializer
         ein: String? = nil,
         ssn: String? = nil,
         personType: PersonTypeModel,
@@ -43,6 +45,7 @@ final class PersonModel {
         self.lastName = lastName
         self.mobilePhone = mobilePhone
         self.workPhone = workPhone
+        self.email = email  // Set email
         self.ein = ein
         self.ssn = ssn
         self.personType = personType
