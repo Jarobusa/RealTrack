@@ -35,6 +35,8 @@ final class PersonModel {
         ein: String? = nil,
         ssn: String? = nil,
         personType: PersonTypeModel,
+        homeAddress: AddressModel? = nil,
+        workAddress: AddressModel? = nil,
         timestamp: Date = .now
     ) {
         self.id = id
@@ -42,10 +44,12 @@ final class PersonModel {
         self.lastName = lastName
         self.mobilePhone = mobilePhone
         self.workPhone = workPhone
-        self.email = email  // Set email
+        self.email = email  
         self.ein = ein
         self.ssn = ssn
         self.personType = personType
+        self.homeAddress = homeAddress
+        self.workAddress = workAddress
         self.timestamp = timestamp
     }
 }

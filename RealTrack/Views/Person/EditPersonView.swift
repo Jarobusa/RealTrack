@@ -21,22 +21,21 @@ struct EditPersonView: View {
     @State private var workPhone: String = ""
     @State private var email: String = ""
     @State private var selectedType: PersonTypeModel?
-    @State private var isAddingAddress = false
     @State private var showInvalidEmailWarning = false
     @State private var hasChanges: Bool = false
     @State private var isInitialized = false
-    
-    enum EditingAddressType: Identifiable {
-        case home, work
- 
-        var id: String {
-            switch self {
-            case .home: return "home"
-            case .work: return "work"
-            }
-        }
-    }
-    @State private var editingAddressType: EditingAddressType?
+
+    @State private var homeAddress1 = ""
+    @State private var homeAddress2 = ""
+    @State private var homeCity = ""
+    @State private var homeState = ""
+    @State private var homeZip = ""
+
+    @State private var workAddress1 = ""
+    @State private var workAddress2 = ""
+    @State private var workCity = ""
+    @State private var workState = ""
+    @State private var workZip = ""
 
     var body: some View {
         NavigationStack {
@@ -96,55 +95,41 @@ struct EditPersonView: View {
                 }
 
                 Section(header: Text("Home Address")) {
-                    if let home = person.homeAddress {
-                        VStack(alignment: .leading) {
-                            if let line1 = home.address1 { Text(line1) }
-                            if let line2 = home.address2 { Text(line2) }
-                            HStack {
-                                Text(home.city ?? "")
-                                Text(home.state ?? "")
-                                Text(home.zip ?? "")
-                            }
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-
-                            Button("Edit") {
-                                editingAddressType = .home
-                            }
-                            .font(.caption)
-                        }
-                    } else {
-                        Text("No home address.")
-                        Button("Add Home Address") {
-                            person.homeAddress = AddressModel()
-                            editingAddressType = .home
+                    TextField("Address 1", text: $homeAddress1)
+                    TextField("Address 2", text: $homeAddress2)
+                    TextField("City", text: $homeCity)
+                    TextField("State", text: $homeState)
+                    TextField("Zip", text: $homeZip)
+                    
+                    if person.homeAddress != nil {
+                        Button("Remove Home Address", role: .destructive) {
+                            person.homeAddress = nil
+                            homeAddress1 = ""
+                            homeAddress2 = ""
+                            homeCity = ""
+                            homeState = ""
+                            homeZip = ""
+                            hasChanges = true
                         }
                     }
                 }
 
                 Section(header: Text("Work Address")) {
-                    if let work = person.workAddress {
-                        VStack(alignment: .leading) {
-                            if let line1 = work.address1 { Text(line1) }
-                            if let line2 = work.address2 { Text(line2) }
-                            HStack {
-                                Text(work.city ?? "")
-                                Text(work.state ?? "")
-                                Text(work.zip ?? "")
-                            }
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-
-                            Button("Edit") {
-                                editingAddressType = .work
-                            }
-                            .font(.caption)
-                        }
-                    } else {
-                        Text("No work address.")
-                        Button("Add Work Address") {
-                            person.workAddress = AddressModel()
-                            editingAddressType = .work
+                    TextField("Address 1", text: $workAddress1)
+                    TextField("Address 2", text: $workAddress2)
+                    TextField("City", text: $workCity)
+                    TextField("State", text: $workState)
+                    TextField("Zip", text: $workZip)
+                    
+                    if person.workAddress != nil {
+                        Button("Remove Work Address", role: .destructive) {
+                            person.workAddress = nil
+                            workAddress1 = ""
+                            workAddress2 = ""
+                            workCity = ""
+                            workState = ""
+                            workZip = ""
+                            hasChanges = true
                         }
                     }
                 }
@@ -177,16 +162,25 @@ struct EditPersonView: View {
                 workPhone = person.workPhone ?? ""
                 email = person.email ?? ""
                 selectedType = person.personType
+                
+                if let home = person.homeAddress {
+                    homeAddress1 = home.address1 ?? ""
+                    homeAddress2 = home.address2 ?? ""
+                    homeCity = home.city ?? ""
+                    homeState = home.state ?? ""
+                    homeZip = home.zip ?? ""
+                }
+                
+                if let work = person.workAddress {
+                    workAddress1 = work.address1 ?? ""
+                    workAddress2 = work.address2 ?? ""
+                    workCity = work.city ?? ""
+                    workState = work.state ?? ""
+                    workZip = work.zip ?? ""
+                }
+                
                 hasChanges = false
                 isInitialized = true
-            }
-            .sheet(item: $editingAddressType) { type in
-                if let address = (type == .home ? person.homeAddress : person.workAddress) {
-                    EditAddressView(address: address)
-                }
-            }
-            .sheet(isPresented: $isAddingAddress) {
-                AddAddressView(person: person)
             }
         }
     }
@@ -205,6 +199,50 @@ struct EditPersonView: View {
         person.email = email
         person.personType = selectedType
 
+        // HOME
+        let hasHomeData = [homeAddress1, homeAddress2, homeCity, homeState, homeZip].contains { !$0.isEmpty }
+        if hasHomeData {
+            if let existingHome = person.homeAddress {
+                existingHome.address1 = homeAddress1.isEmpty ? nil : homeAddress1
+                existingHome.address2 = homeAddress2.isEmpty ? nil : homeAddress2
+                existingHome.city = homeCity.isEmpty ? nil : homeCity
+                existingHome.state = homeState.isEmpty ? nil : homeState
+                existingHome.zip = homeZip.isEmpty ? nil : homeZip
+                existingHome.timestamp = .now
+            } else {
+                person.homeAddress = AddressModel(
+                    address1: homeAddress1.isEmpty ? nil : homeAddress1,
+                    address2: homeAddress2.isEmpty ? nil : homeAddress2,
+                    city: homeCity.isEmpty ? nil : homeCity,
+                    state: homeState.isEmpty ? nil : homeState,
+                    zip: homeZip.isEmpty ? nil : homeZip,
+                    timestamp: .now
+                )
+            }
+        }
+
+        // WORK
+        let hasWorkData = [workAddress1, workAddress2, workCity, workState, workZip].contains { !$0.isEmpty }
+        if hasWorkData {
+            if let existingWork = person.workAddress {
+                existingWork.address1 = workAddress1.isEmpty ? nil : workAddress1
+                existingWork.address2 = workAddress2.isEmpty ? nil : workAddress2
+                existingWork.city = workCity.isEmpty ? nil : workCity
+                existingWork.state = workState.isEmpty ? nil : workState
+                existingWork.zip = workZip.isEmpty ? nil : workZip
+                existingWork.timestamp = .now
+            } else {
+                person.workAddress = AddressModel(
+                    address1: workAddress1.isEmpty ? nil : workAddress1,
+                    address2: workAddress2.isEmpty ? nil : workAddress2,
+                    city: workCity.isEmpty ? nil : workCity,
+                    state: workState.isEmpty ? nil : workState,
+                    zip: workZip.isEmpty ? nil : workZip,
+                    timestamp: .now
+                )
+            }
+        }
+
         do {
             try context.save()
             hasChanges = false
@@ -213,7 +251,6 @@ struct EditPersonView: View {
             print("❌ Error saving person: \(error)")
         }
     }
-
 }
 
 #Preview {
@@ -223,14 +260,12 @@ struct EditPersonView: View {
                 PersonModel.self,
                 PersonTypeModel.self,
                 AddressModel.self,
-                AddressTypeModel.self
             ]),
             configurations: [ModelConfiguration(isStoredInMemoryOnly: true)]
         )
 
         let personType = PersonTypeModel(name: "Owner")
-        let addressType = AddressTypeModel(name: "Home")
-
+    
         let person = PersonModel(
             firstName: "Jane",
             lastName: "Doe",
@@ -251,7 +286,6 @@ struct EditPersonView: View {
         )
 
         container.mainContext.insert(personType)
-        container.mainContext.insert(addressType)
         container.mainContext.insert(person)
         container.mainContext.insert(address)
 

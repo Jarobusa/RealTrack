@@ -28,15 +28,3 @@ func seedPersonTypesIfNeeded(in context: ModelContext) {
         print("❌ Error seeding person types: \(error)")
     }
 }
-
-func seedAddressTypesIfNeeded(in context: ModelContext) {
-    let defaultTypes = ["Home", "Rental", "Work",]
-    let existing = (try? context.fetch(FetchDescriptor<AddressTypeModel>())) ?? []
-    let existingNames = Set(existing.compactMap { $0.name })
-
-    for name in defaultTypes where !existingNames.contains(name) {
-        context.insert(AddressTypeModel(name: name))
-    }
-
-    try? context.save()
-}

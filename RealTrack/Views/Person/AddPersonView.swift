@@ -12,7 +12,6 @@ struct AddPersonView: View {
     @Environment(\.dismiss) private var dismiss
     @ObservedObject var viewModel: PersonViewModel
     @Query private var personTypes: [PersonTypeModel]
-    @Query private var addressTypes: [AddressTypeModel]
 
     @State private var firstName = ""
     @State private var lastName = ""
@@ -21,12 +20,28 @@ struct AddPersonView: View {
     @State private var ein = ""
     @State private var ssn = ""
     @State private var selectedType: PersonTypeModel?
-    @State private var selectedAddressType: AddressTypeModel?
-    @State private var address1 = ""
-    @State private var address2 = ""
-    @State private var city = ""
-    @State private var state = ""
-    @State private var zip = ""
+    @State private var selectedKind: AddressKind = .home
+
+    @State private var showHomeAddress = true
+    @State private var showWorkAddress = false
+
+    @State private var homeAddress1 = ""
+    @State private var homeAddress2 = ""
+    @State private var homeCity = ""
+    @State private var homeState = ""
+    @State private var homeZip = ""
+
+    @State private var workAddress1 = ""
+    @State private var workAddress2 = ""
+    @State private var workCity = ""
+    @State private var workState = ""
+    @State private var workZip = ""
+
+    enum AddressKind: String, CaseIterable, Identifiable {
+        case home = "Home"
+        case work = "Work"
+        var id: String { rawValue }
+    }
 
     var body: some View {
         NavigationView {
@@ -39,14 +54,18 @@ struct AddPersonView: View {
                 Section(header: Text("Contact")) {
                     TextField("Mobile Phone", text: $mobilePhone)
                         .keyboardType(.numberPad)
-                        .onChange(of: mobilePhone) {
-                            mobilePhone = formatPhone(mobilePhone)
+                        .onChange(of: mobilePhone) { oldValue, newValue in
+                            if newValue.count > oldValue.count {
+                                mobilePhone = formatPhone(newValue)
+                            }
                         }
 
                     TextField("Work Phone", text: $workPhone)
                         .keyboardType(.numberPad)
-                        .onChange(of: workPhone) {
-                            workPhone = formatPhone(workPhone)
+                        .onChange(of: workPhone) { oldValue, newValue in
+                            if newValue.count > oldValue.count {
+                                workPhone = formatPhone(newValue)
+                            }
                         }
                 }
 
@@ -60,18 +79,21 @@ struct AddPersonView: View {
                 }
 
                 Section(header: Text("Address")) {
-                    Picker("Address Type", selection: $selectedAddressType) {
-                        ForEach(addressTypes) { type in
-                            Text(type.name ?? "Unnamed").tag(type as AddressTypeModel?)
-                        }
+                    DisclosureGroup("Home Address", isExpanded: $showHomeAddress) {
+                        TextField("Address 1", text: $homeAddress1)
+                        TextField("Address 2", text: $homeAddress2)
+                        TextField("City", text: $homeCity)
+                        TextField("State", text: $homeState)
+                        TextField("Zip", text: $homeZip)
                     }
-                    .pickerStyle(.menu)
 
-                    TextField("Address 1", text: $address1)
-                    TextField("Address 2", text: $address2)
-                    TextField("City", text: $city)
-                    TextField("State", text: $state)
-                    TextField("Zip", text: $zip)
+                    DisclosureGroup("Work Address", isExpanded: $showWorkAddress) {
+                        TextField("Address 1", text: $workAddress1)
+                        TextField("Address 2", text: $workAddress2)
+                        TextField("City", text: $workCity)
+                        TextField("State", text: $workState)
+                        TextField("Zip", text: $workZip)
+                    }
                 }
 
                 Section(header: Text("Identifiers")) {
@@ -107,21 +129,26 @@ struct AddPersonView: View {
                 if selectedType == nil {
                     selectedType = personTypes.first
                 }
-                if selectedAddressType == nil {
-                    selectedAddressType = addressTypes.first
-                }
             }
         }
     }
 
     private func savePerson() {
-        let address = AddressModel(
-            address1: address1.isEmpty ? nil : address1,
-            address2: address2.isEmpty ? nil : address2,
-            city: city.isEmpty ? nil : city,
-            state: state.isEmpty ? nil : state,
-            zip: zip.isEmpty ? nil : zip,
-            addressType: selectedAddressType!,
+        let homeAddress = AddressModel(
+            address1: homeAddress1.isEmpty ? nil : homeAddress1,
+            address2: homeAddress2.isEmpty ? nil : homeAddress2,
+            city: homeCity.isEmpty ? nil : homeCity,
+            state: homeState.isEmpty ? nil : homeState,
+            zip: homeZip.isEmpty ? nil : homeZip,
+            timestamp: .now
+        )
+
+        let workAddress = AddressModel(
+            address1: workAddress1.isEmpty ? nil : workAddress1,
+            address2: workAddress2.isEmpty ? nil : workAddress2,
+            city: workCity.isEmpty ? nil : workCity,
+            state: workState.isEmpty ? nil : workState,
+            zip: workZip.isEmpty ? nil : workZip,
             timestamp: .now
         )
 
@@ -133,7 +160,8 @@ struct AddPersonView: View {
             ein: ein.isEmpty ? nil : ein,
             ssn: ssn.isEmpty ? nil : ssn,
             personType: selectedType!,
-            address: address
+            homeAddress: showHomeAddress ? homeAddress : nil,
+            workAddress: showWorkAddress ? workAddress : nil
         )
         dismiss()
     }

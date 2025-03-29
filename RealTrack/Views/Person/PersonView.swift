@@ -40,16 +40,14 @@ struct PersonView: View {
 
                 Divider()
 
-                if let home = person.homeAddress {
-                    Text("Home Address")
-                        .font(.headline)
-                    addressButton(for: home)
+                if let home = person.homeAddress,
+                   [home.address1, home.address2, home.city, home.state, home.zip].contains(where: { ($0 ?? "").isEmpty == false }) {
+                    addressButton(for: home, title: "Home Address")
                 }
 
-                if let work = person.workAddress {
-                    Text("Work Address")
-                        .font(.headline)
-                    addressButton(for: work)
+                if let work = person.workAddress,
+                   [work.address1, work.address2, work.city, work.state, work.zip].contains(where: { ($0 ?? "").isEmpty == false }) {
+                    addressButton(for: work, title: "Work Address")
                 }
 
                 if person.homeAddress == nil && person.workAddress == nil {
@@ -74,14 +72,15 @@ struct PersonView: View {
     }
 
     @ViewBuilder
-    private func addressButton(for address: AddressModel) -> some View {
+    private func addressButton(for address: AddressModel, title: String) -> some View {
         Button {
             openInMaps(address)
         } label: {
-            VStack(alignment: .leading, spacing: 4) {
-                if let label = address.addressType?.name {
-                    Text(label).font(.subheadline).bold()
-                }
+            VStack(alignment: .leading, spacing: 2) {
+                Text(title)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+
                 if let line1 = address.address1 { Text(line1) }
                 if let line2 = address.address2 { Text(line2) }
                 HStack {
@@ -92,7 +91,7 @@ struct PersonView: View {
                 .font(.caption)
                 .foregroundStyle(.secondary)
             }
-            .padding(.vertical, 4)
+            .padding(.vertical, 2)
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
@@ -115,13 +114,10 @@ struct PersonView_Previews: PreviewProvider {
         let container = try! ModelContainer(
             for: PersonModel.self,
             AddressModel.self,
-            AddressTypeModel.self,
             PersonTypeModel.self,
             configurations: ModelConfiguration(isStoredInMemoryOnly: true)
         )
 
-        let homeType = AddressTypeModel(name: "Home")
-        let workType = AddressTypeModel(name: "Work")
         let personType = PersonTypeModel(name: "Renter")
 
         let person = PersonModel(
@@ -136,16 +132,12 @@ struct PersonView_Previews: PreviewProvider {
         )
 
         let address1 = AddressModel(address1: "123 Main St", city: "Boston", state: "MA", zip: "02118")
-        address1.addressType = homeType
 
         let address2 = AddressModel(address1: "456 Work Ave", address2: "Suite 500", city: "Cambridge", state: "MA", zip: "02139")
-        address2.addressType = workType
 
         person.homeAddress = address1
         person.workAddress = address2
 
-        container.mainContext.insert(homeType)
-        container.mainContext.insert(workType)
         container.mainContext.insert(personType)
         container.mainContext.insert(person)
         container.mainContext.insert(address1)

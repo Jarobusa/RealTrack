@@ -39,7 +39,8 @@ final class PersonViewModel: ObservableObject {
         ein: String? = nil,
         ssn: String? = nil,
         personType: PersonTypeModel,
-        address: AddressModel? = nil
+        homeAddress: AddressModel? = nil,
+        workAddress: AddressModel? = nil
     ) {
         let newPerson = PersonModel(
             firstName: firstName,
@@ -49,7 +50,9 @@ final class PersonViewModel: ObservableObject {
             email: email,
             ein: ein,
             ssn: ssn,
-            personType: personType
+            personType: personType,
+            homeAddress: homeAddress,
+            workAddress: workAddress
         )
         
         

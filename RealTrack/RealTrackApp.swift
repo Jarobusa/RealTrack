@@ -15,7 +15,6 @@ struct RealTrackApp: App {
     init() {
         let context = persistenceController.container.mainContext
         seedPersonTypesIfNeeded(in: context)
-        seedAddressTypesIfNeeded(in: context)
     }
     
     var body: some Scene {

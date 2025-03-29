@@ -21,7 +21,6 @@ struct PersistenceController {
             AddressModel.self,
             PersonModel.self,
             PersonTypeModel.self,
-            AddressTypeModel.self,
             OrganizationModel.self
         ])
         // Create a configuration with an option to store in memory (for testing) or on disk

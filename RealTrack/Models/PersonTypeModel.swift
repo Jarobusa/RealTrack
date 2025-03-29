@@ -1,5 +1,5 @@
 //
-//  AddressType.swift
+//  PersonTypeModel.swift
 //  RealTrack
 //
 //  Created by Robert Williams on 3/22/25.

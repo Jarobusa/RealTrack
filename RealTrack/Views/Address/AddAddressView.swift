@@ -14,15 +14,20 @@ struct AddAddressView: View {
 
     var viewModel: AddressViewModel? = nil
     var person: PersonModel? = nil
+    
+    enum AddressKind: String, CaseIterable, Identifiable {
+        case home = "Home"
+        case work = "Work"
 
-    @Query private var addressTypes: [AddressTypeModel]
+        var id: String { rawValue }
+    }
 
     @State private var address1: String = ""
     @State private var address2: String = ""
     @State private var city: String = ""
     @State private var state: String = ""
     @State private var zip: String = ""
-    @State private var selectedType: AddressTypeModel?
+    @State private var selectedKind: AddressKind = .home
 
     @FocusState private var isAddress1Focused: Bool
 
@@ -30,13 +35,21 @@ struct AddAddressView: View {
         !address1.trimmingCharacters(in: .whitespaces).isEmpty &&
         !city.trimmingCharacters(in: .whitespaces).isEmpty &&
         !state.trimmingCharacters(in: .whitespaces).isEmpty &&
-        !zip.trimmingCharacters(in: .whitespaces).isEmpty &&
-        selectedType != nil
+        !zip.trimmingCharacters(in: .whitespaces).isEmpty
     }
 
     var body: some View {
         NavigationStack {
             Form {
+                Section {
+                    Picker("Address Type", selection: $selectedKind) {
+                        ForEach(AddressKind.allCases) { kind in
+                            Text(kind.rawValue).tag(kind)
+                        }
+                    }
+                    .pickerStyle(.segmented)
+                }
+
                 Section(header: Text("Address Details")) {
                     TextField("Address 1", text: $address1, prompt: Text("123 Main St").foregroundColor(.gray))
                         .focused($isAddress1Focused)
@@ -49,15 +62,6 @@ struct AddAddressView: View {
 
                     TextField("Zip Code", text: $zip, prompt: Text("30310").foregroundColor(.gray))
                         .keyboardType(.numberPad)
-                }
-
-                Section(header: Text("Address Type")) {
-                    Picker("Select Type", selection: $selectedType) {
-                        ForEach(addressTypes) { type in
-                            Text(type.name ?? "Unknown").tag(type as AddressTypeModel?)
-                        }
-                    }
-                    .pickerStyle(.menu)
                 }
             }
             .navigationTitle("Add Address")
@@ -80,7 +84,6 @@ struct AddAddressView: View {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                     isAddress1Focused = true
                 }
-                selectedType = addressTypes.first
             }
         }
     }
@@ -95,9 +98,7 @@ struct AddAddressView: View {
             zip: zip,
             timestamp: Date()
         )
-
-        newAddress.addressType = selectedType
-
+        
         modelContext.insert(newAddress)
 
         do {
