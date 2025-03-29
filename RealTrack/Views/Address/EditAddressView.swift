@@ -10,12 +10,25 @@ import SwiftData
 
 struct EditAddressView: View {
     @Bindable var address: AddressModel
+    @Query private var addressTypes: [AddressTypeModel]  // Fetch available address types
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var modelContext
 
     var body: some View {
         NavigationStack {  // ✅ Ensure it's inside a NavigationStack
             Form {
+                Section(header: Text("Address Type")) {
+                    Picker("Address Type", selection: Binding(
+                        get: { address.addressType },
+                        set: { address.addressType = $0 }
+                    )) {
+                        ForEach(addressTypes) { type in
+                            Text(type.name ?? "Unnamed").tag(type as AddressTypeModel?)
+                        }
+                    }
+                    .pickerStyle(.menu)
+                }
+
                 Section(header: Text("Address Details")) {
                     TextField("Address 1", text: Binding(
                         get: { address.address1 ?? "" },

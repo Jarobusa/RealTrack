@@ -37,7 +37,8 @@ final class PersonViewModel: ObservableObject {
         workPhone: String? = nil,
         ein: String? = nil,
         ssn: String? = nil,
-        personType: PersonTypeModel
+        personType: PersonTypeModel,
+        address: AddressModel? = nil
     ) {
         let newPerson = PersonModel(
             firstName: firstName,
@@ -49,6 +50,10 @@ final class PersonViewModel: ObservableObject {
             personType: personType
         )
         
+        if let address = address {
+            newPerson.addresses.append(address)
+        }
+        
         modelContext.insert(newPerson)
 
         do {
@@ -58,6 +63,17 @@ final class PersonViewModel: ObservableObject {
             print("❌ Failed to save person: \(error)")
         }
 
+        fetchPeople()
+    }
+
+    /// Update an existing person
+    func updatePerson(_ person: PersonModel) {
+        do {
+            try modelContext.save()
+            print("✅ Successfully updated person: \(person.firstName ?? "Unknown")")
+        } catch {
+            print("❌ Failed to update person: \(error)")
+        }
         fetchPeople()
     }
 

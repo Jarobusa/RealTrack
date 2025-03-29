@@ -23,6 +23,7 @@ final class AddressModel {
 
     init(id: UUID = UUID(), address1: String? = nil, address2: String? = nil,
          city: String? = nil, state: String? = nil, zip: String? = nil,
+         addressType: AddressTypeModel? = nil,
          timestamp: Date = Date()) {
         self.id = id
         self.address1 = address1
@@ -30,6 +31,7 @@ final class AddressModel {
         self.city = city
         self.state = state
         self.zip = zip
+        self.addressType = addressType
         self.timestamp = timestamp
     }
 }

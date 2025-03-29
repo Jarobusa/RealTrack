@@ -7,6 +7,7 @@
 
 import SwiftUI
 import SwiftData
+import MapKit
 
 struct PersonView: View {
     let person: PersonModel
@@ -43,21 +44,27 @@ struct PersonView: View {
                         .font(.headline)
 
                     ForEach(person.addresses, id: \.id) { address in
-                        VStack(alignment: .leading, spacing: 4) {
-                            if let label = address.addressType?.name {
-                                Text(label).font(.subheadline).bold()
+                        Button {
+                            openInMaps(address)
+                        } label: {
+                            VStack(alignment: .leading, spacing: 4) {
+                                if let label = address.addressType?.name {
+                                    Text(label).font(.subheadline).bold()
+                                }
+                                if let line1 = address.address1 { Text(line1) }
+                                if let line2 = address.address2 { Text(line2) }
+                                HStack {
+                                    Text(address.city ?? "")
+                                    Text(address.state ?? "")
+                                    Text(address.zip ?? "")
+                                }
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
                             }
-                            if let line1 = address.address1 { Text(line1) }
-                            if let line2 = address.address2 { Text(line2) }
-                            HStack {
-                                Text(address.city ?? "")
-                                Text(address.state ?? "")
-                                Text(address.zip ?? "")
-                            }
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
+                            .padding(.vertical, 4)
+                            .contentShape(Rectangle())
                         }
-                        .padding(.vertical, 4)
+                        .buttonStyle(.plain)
                     }
                 }
             }
@@ -74,6 +81,17 @@ struct PersonView: View {
         }
         .sheet(isPresented: $isEditing) {
             EditPersonView(person: person)
+        }
+    }
+
+    private func openInMaps(_ address: AddressModel) {
+        let fullAddress = [address.address1, address.address2, address.city, address.state, address.zip]
+            .compactMap { $0 }
+            .joined(separator: ", ")
+
+        let encoded = fullAddress.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
+        if let url = URL(string: "http://maps.apple.com/?q=\(encoded)") {
+            UIApplication.shared.open(url)
         }
     }
 }

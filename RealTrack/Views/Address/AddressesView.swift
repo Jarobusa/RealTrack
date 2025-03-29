@@ -69,9 +69,6 @@ struct AddressesView: View {
             .navigationTitle("Addresses")
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
-                    EditButton()
-                }
-                ToolbarItem(placement: .topBarTrailing) {
                     Button(action: { isAddingAddress = true }) {
                         Label("Add Address", systemImage: "plus")
                     }

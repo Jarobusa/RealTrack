@@ -12,6 +12,7 @@ struct AddPersonView: View {
     @Environment(\.dismiss) private var dismiss
     @ObservedObject var viewModel: PersonViewModel
     @Query private var personTypes: [PersonTypeModel]
+    @Query private var addressTypes: [AddressTypeModel]
 
     @State private var firstName = ""
     @State private var lastName = ""
@@ -20,6 +21,12 @@ struct AddPersonView: View {
     @State private var ein = ""
     @State private var ssn = ""
     @State private var selectedType: PersonTypeModel?
+    @State private var selectedAddressType: AddressTypeModel?
+    @State private var address1 = ""
+    @State private var address2 = ""
+    @State private var city = ""
+    @State private var state = ""
+    @State private var zip = ""
 
     var body: some View {
         NavigationView {
@@ -50,6 +57,21 @@ struct AddPersonView: View {
                         }
                     }
                     .pickerStyle(.menu)
+                }
+
+                Section(header: Text("Address")) {
+                    Picker("Address Type", selection: $selectedAddressType) {
+                        ForEach(addressTypes) { type in
+                            Text(type.name ?? "Unnamed").tag(type as AddressTypeModel?)
+                        }
+                    }
+                    .pickerStyle(.menu)
+
+                    TextField("Address 1", text: $address1)
+                    TextField("Address 2", text: $address2)
+                    TextField("City", text: $city)
+                    TextField("State", text: $state)
+                    TextField("Zip", text: $zip)
                 }
 
                 Section(header: Text("Identifiers")) {
@@ -85,11 +107,24 @@ struct AddPersonView: View {
                 if selectedType == nil {
                     selectedType = personTypes.first
                 }
+                if selectedAddressType == nil {
+                    selectedAddressType = addressTypes.first
+                }
             }
         }
     }
 
     private func savePerson() {
+        let address = AddressModel(
+            address1: address1.isEmpty ? nil : address1,
+            address2: address2.isEmpty ? nil : address2,
+            city: city.isEmpty ? nil : city,
+            state: state.isEmpty ? nil : state,
+            zip: zip.isEmpty ? nil : zip,
+            addressType: selectedAddressType!,
+            timestamp: .now
+        )
+
         viewModel.addPerson(
             firstName: firstName,
             lastName: lastName.isEmpty ? nil : lastName,
@@ -97,7 +132,8 @@ struct AddPersonView: View {
             workPhone: workPhone.isEmpty ? nil : workPhone,
             ein: ein.isEmpty ? nil : ein,
             ssn: ssn.isEmpty ? nil : ssn,
-            personType: selectedType!
+            personType: selectedType!,
+            address: address
         )
         dismiss()
     }
