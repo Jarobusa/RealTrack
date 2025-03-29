@@ -52,9 +52,6 @@ final class PersonViewModel: ObservableObject {
             personType: personType
         )
         
-        if let address = address {
-            newPerson.addresses.append(address)
-        }
         
         modelContext.insert(newPerson)
 

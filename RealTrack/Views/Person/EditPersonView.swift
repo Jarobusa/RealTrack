@@ -21,12 +21,23 @@ struct EditPersonView: View {
     @State private var workPhone: String = ""
     @State private var email: String = ""
     @State private var selectedType: PersonTypeModel?
-    @State private var selectedAddress: AddressModel?
     @State private var isAddingAddress = false
     @State private var showInvalidEmailWarning = false
     @State private var hasChanges: Bool = false
     @State private var isInitialized = false
     
+    enum EditingAddressType: Identifiable {
+        case home, work
+ 
+        var id: String {
+            switch self {
+            case .home: return "home"
+            case .work: return "work"
+            }
+        }
+    }
+    @State private var editingAddressType: EditingAddressType?
+
     var body: some View {
         NavigationStack {
             Form {
@@ -84,7 +95,59 @@ struct EditPersonView: View {
                     }
                 }
 
-                addressListSection()
+                Section(header: Text("Home Address")) {
+                    if let home = person.homeAddress {
+                        VStack(alignment: .leading) {
+                            if let line1 = home.address1 { Text(line1) }
+                            if let line2 = home.address2 { Text(line2) }
+                            HStack {
+                                Text(home.city ?? "")
+                                Text(home.state ?? "")
+                                Text(home.zip ?? "")
+                            }
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+
+                            Button("Edit") {
+                                editingAddressType = .home
+                            }
+                            .font(.caption)
+                        }
+                    } else {
+                        Text("No home address.")
+                        Button("Add Home Address") {
+                            person.homeAddress = AddressModel()
+                            editingAddressType = .home
+                        }
+                    }
+                }
+
+                Section(header: Text("Work Address")) {
+                    if let work = person.workAddress {
+                        VStack(alignment: .leading) {
+                            if let line1 = work.address1 { Text(line1) }
+                            if let line2 = work.address2 { Text(line2) }
+                            HStack {
+                                Text(work.city ?? "")
+                                Text(work.state ?? "")
+                                Text(work.zip ?? "")
+                            }
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+
+                            Button("Edit") {
+                                editingAddressType = .work
+                            }
+                            .font(.caption)
+                        }
+                    } else {
+                        Text("No work address.")
+                        Button("Add Work Address") {
+                            person.workAddress = AddressModel()
+                            editingAddressType = .work
+                        }
+                    }
+                }
             }
             .navigationTitle("Edit Person")
             .toolbar {
@@ -117,8 +180,10 @@ struct EditPersonView: View {
                 hasChanges = false
                 isInitialized = true
             }
-            .sheet(item: $selectedAddress) { address in
-                EditAddressView(address: address)
+            .sheet(item: $editingAddressType) { type in
+                if let address = (type == .home ? person.homeAddress : person.workAddress) {
+                    EditAddressView(address: address)
+                }
             }
             .sheet(isPresented: $isAddingAddress) {
                 AddAddressView(person: person)
@@ -149,46 +214,6 @@ struct EditPersonView: View {
         }
     }
 
-    @ViewBuilder
-    private func addressListSection() -> some View {
-        Section(header: Text("Addresses")) {
-            if person.addresses.isEmpty {
-                Text("No addresses on file.")
-                    .foregroundStyle(.secondary)
-            } else {
-                ForEach(person.addresses, id: \.id) { address in
-                    VStack(alignment: .leading, spacing: 4) {
-                        if let label = address.addressType?.name {
-                            Text(label)
-                                .font(.subheadline)
-                                .bold()
-                        }
-                        if let line1 = address.address1 { Text(line1) }
-                        if let line2 = address.address2 { Text(line2) }
-                        HStack {
-                            Text(address.city ?? "")
-                            Text(address.state ?? "")
-                            Text(address.zip ?? "")
-                        }
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-
-                        Button("Edit") {
-                            selectedAddress = address
-                        }
-                        .font(.caption)
-                    }
-                    .padding(.vertical, 4)
-                }
-            }
-
-            Button {
-                isAddingAddress = true
-            } label: {
-                Label("New Address", systemImage: "plus")
-            }
-        }
-    }
 }
 
 #Preview {
@@ -224,8 +249,6 @@ struct EditPersonView: View {
             state: "NY",
             zip: "10001"
         )
-        address.person = person
-        address.addressType = addressType
 
         container.mainContext.insert(personType)
         container.mainContext.insert(addressType)

@@ -17,8 +17,7 @@ final class AddressModel {
     var state: String?
     var zip: String?
     var timestamp: Date
-    
-    var person: PersonModel?
+
     var addressType: AddressTypeModel?
 
     init(id: UUID = UUID(), address1: String? = nil, address2: String? = nil,

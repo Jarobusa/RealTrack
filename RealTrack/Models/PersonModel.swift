@@ -15,17 +15,14 @@ final class PersonModel {
     var lastName: String?
     var mobilePhone: String?
     var workPhone: String?
-    var email: String?  // New property
+    var email: String?
     var timestamp: Date
 
     @Attribute(.unique) var ein: String?
     @Attribute(.unique) var ssn: String?  
     
-    // ✅ One-to-many relationship
-    @Relationship(deleteRule: .cascade, inverse: \AddressModel.person)
-    var addresses: [AddressModel] = []
-
-    // Link to PersonTypeModel (many-to-one)
+    var homeAddress: AddressModel?
+    var workAddress: AddressModel?
     var personType: PersonTypeModel?
 
     init(
@@ -34,7 +31,7 @@ final class PersonModel {
         lastName: String? = nil,
         mobilePhone: String? = nil,
         workPhone: String? = nil,
-        email: String? = nil,  // Updated initializer
+        email: String? = nil,
         ein: String? = nil,
         ssn: String? = nil,
         personType: PersonTypeModel,

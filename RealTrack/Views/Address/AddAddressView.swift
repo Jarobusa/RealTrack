@@ -96,10 +96,6 @@ struct AddAddressView: View {
             timestamp: Date()
         )
 
-        if let person {
-            newAddress.person = person
-        }
-
         newAddress.addressType = selectedType
 
         modelContext.insert(newAddress)
