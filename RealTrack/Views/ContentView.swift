@@ -13,15 +13,21 @@ struct ContentView: View {
 
     var body: some View {
         TabView {
-            AddressesView(modelContext: modelContext)
-                .tabItem {
-                    Label("Addresses", systemImage: "house")
-                }
-
-            PeopleView()  // ✅ Make sure this struct exists
+            PeopleView()
                 .tabItem {
                     Label("Person", systemImage: "person")
                 }
+
+            HousessView()
+                .tabItem {
+                    Label("Houses", systemImage: "house")
+                }
+            
+            AddressesView(modelContext: modelContext)
+                .tabItem {
+                    Label("Addresses", systemImage: "building.columns")
+                }
+
         }
     }
 }

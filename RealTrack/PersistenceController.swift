@@ -19,6 +19,7 @@ struct PersistenceController {
         // of the structure of your data models.
         let schema = Schema([
             AddressModel.self,
+            HouseModel.self,
             PersonModel.self,
             PersonTypeModel.self,
             OrganizationModel.self
