@@ -3,7 +3,6 @@
 //  RealTrack
 //
 //  Created by Robert Williams on 3/24/25.
-//
 
 import SwiftUI
 import SwiftData
@@ -85,9 +84,13 @@ struct AddressesView: View {
             AddAddressView(viewModel: viewModel)
         }
         .alert(item: $addressToDelete) { address in
-            Alert(
+            let linkedPeople = viewModel.findPeopleByAddress(address)
+            let messageText = linkedPeople.isEmpty ?
+                "Are you sure you want to delete this address?" :
+                "This address is linked to \(linkedPeople.count) people. Are you sure you want to delete it?"
+            return Alert(
                 title: Text("Delete Address"),
-                message: Text("Are you sure you want to delete this address?"),
+                message: Text(messageText),
                 primaryButton: .destructive(Text("Delete"), action: {
                     deleteAddress(address: address)
                 }),

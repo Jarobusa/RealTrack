@@ -94,4 +94,25 @@ final class PersonViewModel: ObservableObject {
 
         fetchPeople()
     }
+
+    /// Returns all people who have the specified address as either their home or work address
+    func findPeopleByAddress(_ address: AddressModel) -> [PersonModel] {
+           // When using UUIDs, we can use the ID directly for filtering
+           let addressID = address.id
+           
+           let descriptor = FetchDescriptor<PersonModel>(
+               predicate: #Predicate<PersonModel> { person in
+                   (person.homeAddress?.id == addressID) || (person.workAddress?.id == addressID)
+               }
+           )
+           
+           do {
+               let matchingPeople = try modelContext.fetch(descriptor)
+               print("✅ Found \(matchingPeople.count) people linked to address ID: \(addressID)")
+               return matchingPeople
+           } catch {
+               print("❌ Error finding people by address: \(error.localizedDescription)")
+               return []
+           }
+       }
 }
