@@ -12,6 +12,7 @@ struct AddressesView: View {
     @Environment(\.modelContext) private var modelContext
     @StateObject private var viewModel: AddressViewModel
     @State private var isAddingAddress = false
+    @State private var addressToDelete: AddressModel? = nil
     @State private var selectedSortOption: SortOption = .city
 
     /// Enum for sorting options
@@ -58,7 +59,7 @@ struct AddressesView: View {
                         }
                         .swipeActions {
                             Button(role: .destructive) {
-                                deleteAddress(at: index)
+                                addressToDelete = address
                             } label: {
                                 Label("Delete", systemImage: "trash")
                             }
@@ -83,15 +84,22 @@ struct AddressesView: View {
         }) {
             AddAddressView(viewModel: viewModel)
         }
+        .alert(item: $addressToDelete) { address in
+            Alert(
+                title: Text("Delete Address"),
+                message: Text("Are you sure you want to delete this address?"),
+                primaryButton: .destructive(Text("Delete"), action: {
+                    deleteAddress(address: address)
+                }),
+                secondaryButton: .cancel()
+            )
+        }
     }
 
     // MARK: - Delete Address
-    private func deleteAddress(at index: Int) {
-        let addressToDelete = sortedAddresses[index]
-        print("Deleting Address ID:", addressToDelete.id)
-
+    private func deleteAddress(address: AddressModel) {
         do {
-            if let originalAddress = viewModel.addresses.first(where: { $0.id == addressToDelete.id }) {
+            if let originalAddress = viewModel.addresses.first(where: { $0.id == address.id }) {
                 modelContext.delete(originalAddress)
                 try modelContext.save()
                 print("✅ Address deleted successfully!")

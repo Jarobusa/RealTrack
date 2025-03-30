@@ -14,20 +14,12 @@ struct AddAddressView: View {
 
     var viewModel: AddressViewModel? = nil
     var person: PersonModel? = nil
-    
-    enum AddressKind: String, CaseIterable, Identifiable {
-        case home = "Home"
-        case work = "Work"
-
-        var id: String { rawValue }
-    }
 
     @State private var address1: String = ""
     @State private var address2: String = ""
     @State private var city: String = ""
     @State private var state: String = ""
     @State private var zip: String = ""
-    @State private var selectedKind: AddressKind = .home
 
     @FocusState private var isAddress1Focused: Bool
 
@@ -41,15 +33,6 @@ struct AddAddressView: View {
     var body: some View {
         NavigationStack {
             Form {
-                Section {
-                    Picker("Address Type", selection: $selectedKind) {
-                        ForEach(AddressKind.allCases) { kind in
-                            Text(kind.rawValue).tag(kind)
-                        }
-                    }
-                    .pickerStyle(.segmented)
-                }
-
                 Section(header: Text("Address Details")) {
                     TextField("Address 1", text: $address1, prompt: Text("123 Main St").foregroundColor(.gray))
                         .focused($isAddress1Focused)
