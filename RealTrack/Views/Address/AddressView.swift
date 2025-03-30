@@ -3,7 +3,6 @@
 //  RealTrack
 //
 //  Created by Robert Williams on 3/22/25.
-//
 
 import SwiftUI
 import SwiftData
@@ -11,6 +10,7 @@ import MapKit
 
 struct AddressView: View {
     let address: AddressModel
+    @Environment(\.modelContext) private var modelContext
     @State private var annotations: [AddressAnnotation] = []
     @State private var isEditing = false
     @State private var isShowingShareSheet = false
@@ -20,6 +20,8 @@ struct AddressView: View {
             span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
         )
     )
+    @State private var linkedPersons: [PersonModel] = []
+
     // Computed USPS-style address
     var fullAddress: String {
         var lines: [String] = []
@@ -53,22 +55,7 @@ struct AddressView: View {
                 Text(fullAddress)
                     .font(.system(.body, design: .monospaced).bold())
                     .multilineTextAlignment(.leading)
-
-                Map(position: $cameraPosition) {
-                    ForEach(annotations) { item in
-                        Annotation("", coordinate: item.coordinate) {
-                            Image(systemName: "mappin.circle.fill")
-                                .foregroundStyle(.red)
-                        }
-                    }
-                }
-                .mapStyle(.standard)
-                .frame(height: 250)
-                .cornerRadius(10)
-                .mapStyle(.standard)
-                .frame(height: 250)
-                .cornerRadius(10)
-
+                mapView
                 HStack(spacing: 16) {
                     Button(action: openInMaps) {
                         Label("Open in Maps", systemImage: "map")
@@ -80,7 +67,7 @@ struct AddressView: View {
                     }
                 }
                 .font(.headline)
-
+                linkedPersonsView
                 Spacer()
             }
             .padding()
@@ -101,6 +88,41 @@ struct AddressView: View {
         }
         .onAppear {
             geocodeAddress()
+            loadLinkedPersons()
+        }
+    }
+
+    private var mapView: some View {
+        Map(position: $cameraPosition) {
+            ForEach(annotations) { item in
+                Annotation("", coordinate: item.coordinate) {
+                    Image(systemName: "mappin.circle.fill")
+                        .foregroundStyle(.red)
+                }
+            }
+        }
+        .mapStyle(.standard)
+        .frame(height: 250)
+        .cornerRadius(10)
+    }
+
+    private var linkedPersonsView: some View {
+        Group {
+            if !linkedPersons.isEmpty {
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("Linked Persons")
+                        .font(.headline)
+                    ForEach(linkedPersons, id: \.id) { person in
+                        Text("\(person.firstName ?? "Unnamed") \(person.lastName ?? "")")
+                    }
+                }
+                .padding(.top)
+            } else {
+                Text("No persons linked to this address")
+                    .font(.subheadline)
+                    .foregroundColor(.gray)
+                    .padding(.top)
+            }
         }
     }
 
@@ -139,6 +161,12 @@ struct AddressView: View {
                 print("Error geocoding address for map: \(error?.localizedDescription ?? "Unknown error")")
             }
         }
+    }
+    
+    private func loadLinkedPersons() {
+        // Use AddressViewModel to fetch persons linked to this address
+        let viewModel = AddressViewModel(modelContext: modelContext)
+        linkedPersons = viewModel.findPeopleByAddress(address)
     }
 }
 

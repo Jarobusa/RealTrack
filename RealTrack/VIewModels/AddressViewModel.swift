@@ -14,7 +14,6 @@ final class AddressViewModel: ObservableObject {
 
     init(modelContext: ModelContext) {
         self.modelContext = modelContext
-      //  fetchAddresses()
     }
 
     /// Fetch all addresses from SwiftData
