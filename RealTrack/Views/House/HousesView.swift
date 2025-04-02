@@ -10,13 +10,14 @@ import SwiftData
 
 struct HousessView: View {
     @StateObject private var viewModel: HouseViewModel
+    @State private var isPresentingAddHouseView: Bool = false
 
     init(viewModel: HouseViewModel = HouseViewModel()) {
         _viewModel = StateObject(wrappedValue: viewModel)
     }
 
     var body: some View {
-        NavigationView {
+        NavigationStack {
             List(viewModel.houses, id: \.id) { house in
                 VStack(alignment: .leading) {
                     Text(house.name ?? "Unnamed")
@@ -27,6 +28,18 @@ struct HousessView: View {
                 }
             }
             .navigationTitle("Houses")
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button {
+                        isPresentingAddHouseView = true
+                    } label: {
+                        Image(systemName: "plus")
+                    }
+                }
+            }
+            .sheet(isPresented: $isPresentingAddHouseView) {
+                AddHouseView()
+            }
         }
     }
 }

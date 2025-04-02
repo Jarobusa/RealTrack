@@ -34,4 +34,10 @@ final class HouseViewModel: ObservableObject {
     func people(in house: HouseModel) -> [PersonModel] {
         return house.personModel
     }
+
+    /// Returns all houses.
+    /// - Returns: An array of all HouseModel instances.
+    func getAllHouses() -> [HouseModel] {
+        return houses
+    }
 }
