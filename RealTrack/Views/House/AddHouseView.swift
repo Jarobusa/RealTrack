@@ -18,6 +18,9 @@ struct AddHouseView: View {
     @State private var city: String = ""
     @State private var state: String = ""
     @State private var zip: String = ""
+    
+    @State private var isPresentingSelectPersonView: Bool = false
+    @State private var linkedPersons: [PersonModel] = []
 
     @FocusState private var isHouseNameFocused: Bool
 
@@ -44,6 +47,24 @@ struct AddHouseView: View {
                     TextField("Zip Code", text: $zip, prompt: Text("Zip Code").foregroundColor(.gray))
                         .keyboardType(.numberPad)
                 }
+                Section(header: Text("Linked Persons")) {
+                    if linkedPersons.isEmpty {
+                        Text("No linked persons")
+                            .foregroundStyle(.secondary)
+                    } else {
+                        ForEach(linkedPersons, id: \.id) { person in
+                            Text("\(String(describing: person.firstName)) \(String(describing: person.lastName))")
+                        }
+                    }
+                    Button {
+                        isPresentingSelectPersonView = true
+                    } label: {
+                        HStack {
+                            Image(systemName: "plus.circle")
+                            Text("Add Linked Person")
+                        }
+                    }
+                }
             }
             .navigationTitle("Add House")
             .toolbar {
@@ -67,6 +88,13 @@ struct AddHouseView: View {
                     isHouseNameFocused = true
                 }
             }
+            .sheet(isPresented: $isPresentingSelectPersonView) {
+                SelectPersonView { selectedPerson in
+                    if !linkedPersons.contains(where: { $0.id == selectedPerson.id }) {
+                        linkedPersons.append(selectedPerson)
+                    }
+                }
+            }
         }
     }
 
@@ -88,6 +116,7 @@ struct AddHouseView: View {
             address: newAddress,
             timestamp: Date()
         )
+        newHouse.personModel.append(contentsOf: linkedPersons)
         modelContext.insert(newHouse)
 
         do {
