@@ -12,6 +12,8 @@ struct AddHouseView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var modelContext
 
+    @StateObject private var houseViewModel = HouseViewModel()
+
     @State private var houseName: String = ""
     @State private var address1: String = ""
     @State private var address2: String = ""
@@ -53,7 +55,7 @@ struct AddHouseView: View {
                             .foregroundStyle(.secondary)
                     } else {
                         ForEach(linkedPersons, id: \.id) { person in
-                            Text("\(String(describing: person.firstName)) \(String(describing: person.lastName))")
+                            Text("\(person.firstName ?? "") \(person.lastName ?? "")")
                         }
                     }
                     Button {
@@ -75,10 +77,18 @@ struct AddHouseView: View {
                     .foregroundColor(.red)
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button {
-                        saveHouse()
-                    } label: {
-                        Image(systemName: "plus")
+                    Button("Save") {
+                        houseViewModel.saveHouse(
+                            houseName: houseName,
+                            address1: address1,
+                            address2: address2,
+                            city: city,
+                            state: state,
+                            zip: zip,
+                            linkedPersons: linkedPersons,
+                            context: modelContext
+                        )
+                        dismiss()
                     }
                     .disabled(!isSaveEnabled)
                 }
@@ -98,34 +108,7 @@ struct AddHouseView: View {
         }
     }
 
-    private func saveHouse() {
-        let newAddress = AddressModel(
-            id: UUID(),
-            address1: address1,
-            address2: address2.isEmpty ? nil : address2,
-            city: city,
-            state: state,
-            zip: zip,
-            timestamp: Date()
-        )
-        modelContext.insert(newAddress)
-
-        let newHouse = HouseModel(
-            id: UUID(),
-            name: houseName,
-            address: newAddress,
-            timestamp: Date()
-        )
-        newHouse.personModel.append(contentsOf: linkedPersons)
-        modelContext.insert(newHouse)
-
-        do {
-            try modelContext.save()
-            dismiss()
-        } catch {
-            print("❌ Error saving house: \(error)")
-        }
-    }
+    
 }
 
 struct AddHouseView_Previews: PreviewProvider {

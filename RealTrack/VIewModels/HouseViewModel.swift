@@ -40,4 +40,43 @@ final class HouseViewModel: ObservableObject {
     func getAllHouses() -> [HouseModel] {
         return houses
     }
+
+    /// Saves a new house with the given details and linked persons.
+    /// - Parameters:
+    ///   - houseName: The name of the house.
+    ///   - address1: The primary address line.
+    ///   - address2: The secondary address line (optional).
+    ///   - city: The city.
+    ///   - state: The state.
+    ///   - zip: The zip code.
+    ///   - linkedPersons: An array of PersonModel instances to link with the house.
+    ///   - context: The ModelContext used for saving the models.
+    func saveHouse(houseName: String, address1: String, address2: String, city: String, state: String, zip: String, linkedPersons: [PersonModel], context: ModelContext) {
+        let newAddress = AddressModel(
+            id: UUID(),
+            address1: address1,
+            address2: address2.isEmpty ? nil : address2,
+            city: city,
+            state: state,
+            zip: zip,
+            timestamp: Date()
+        )
+        context.insert(newAddress)
+
+        let newHouse = HouseModel(
+            id: UUID(),
+            name: houseName,
+            address: newAddress,
+            timestamp: Date()
+        )
+        newHouse.personModel.append(contentsOf: linkedPersons)
+        context.insert(newHouse)
+
+        do {
+            try context.save()
+            houses.append(newHouse)
+        } catch {
+            print("❌ Error saving house: \(error)")
+        }
+    }
 }
