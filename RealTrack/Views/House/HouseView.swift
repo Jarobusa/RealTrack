@@ -51,6 +51,21 @@ struct HouseView: View {
                             .compactMap { $0 }
                             .joined(separator: ", "))
                             .font(.subheadline)
+
+                            if let address1 = foundHouse.address.address1,
+                               let city = foundHouse.address.city,
+                               let state = foundHouse.address.state {
+                                let fullAddress = "\(address1), \(city), \(state)"
+                                if let encoded = fullAddress.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
+                                   let url = URL(string: "http://maps.apple.com/?q=\(encoded)") {
+                                    Link(destination: url) {
+                                        Label("Open in Apple Maps", systemImage: "map.fill")
+                                            .font(.subheadline)
+                                            .foregroundColor(.blue)
+                                            .padding(.top, 4)
+                                    }
+                                }
+                            }
                         }
 
                         // Timestamp
@@ -74,4 +89,3 @@ struct HouseView: View {
         }
     }
 }
-
