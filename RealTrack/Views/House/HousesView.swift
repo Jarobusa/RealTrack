@@ -25,12 +25,14 @@ struct HousessView: View {
     var body: some View {
         NavigationStack {
             List(viewModel.houses, id: \.id) { house in
-                VStack(alignment: .leading) {
-                    Text(house.name ?? "Unnamed")
-                        .font(.headline)
-                    Text("\(house.address.address1 ?? "No address"), \(house.address.city ?? "No city")")
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
+                NavigationLink(destination: HouseView(modelContext: modelContext, house: house)) {
+                    VStack(alignment: .leading) {
+                        Text(house.name ?? "Unnamed")
+                            .font(.headline)
+                        Text("\(house.address.address1 ?? "No address"), \(house.address.city ?? "No city"), \(house.address.state ?? "No state")")
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                    }
                 }
             }
             .navigationTitle("Houses")

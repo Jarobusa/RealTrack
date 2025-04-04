@@ -94,4 +94,11 @@ final class HouseViewModel: ObservableObject {
             print("❌ Error saving house: \(error)")
         }
     }
+
+    /// Finds and returns the HouseModel with the specified id.
+    /// - Parameter id: The UUID of the house to find.
+    /// - Returns: The HouseModel if found, or nil if not found.
+    func findHouse(by id: UUID) -> HouseModel? {
+        return houses.first { $0.id == id }
+    }
 }

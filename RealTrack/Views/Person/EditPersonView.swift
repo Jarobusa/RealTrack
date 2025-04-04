@@ -194,9 +194,9 @@ struct EditPersonView: View {
 
         person.firstName = firstName
         person.lastName = lastName
-        person.mobilePhone = mobilePhone
-        person.workPhone = workPhone
-        person.email = email
+        person.mobilePhone = mobilePhone.isEmpty ? nil : mobilePhone
+        person.workPhone = workPhone.isEmpty ? nil : workPhone
+        person.email = email.isEmpty ? nil : email
         person.personType = selectedType
 
         // HOME

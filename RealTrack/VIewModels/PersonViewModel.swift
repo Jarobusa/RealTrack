@@ -55,7 +55,6 @@ final class PersonViewModel: ObservableObject {
             workAddress: workAddress
         )
         
-        
         modelContext.insert(newPerson)
 
         do {
