@@ -85,9 +85,18 @@ struct AddressesView: View {
         }
         .alert(item: $addressToDelete) { address in
             let linkedPeople = viewModel.findPeopleByAddress(address)
-            let messageText = linkedPeople.isEmpty ?
-                "Are you sure you want to delete this address?" :
-                "This address is linked to \(linkedPeople.count) people. Are you sure you want to delete it?"
+            let linkedHouses = viewModel.findHousesByAddress(address)
+            
+            var messageText = "Are you sure you want to delete this address?"
+            
+            if !linkedPeople.isEmpty && !linkedHouses.isEmpty {
+                messageText = "This address is linked to \(linkedPeople.count) people and \(linkedHouses.count) houses. Are you sure you want to delete it?"
+            } else if !linkedPeople.isEmpty {
+                messageText = "This address is linked to \(linkedPeople.count) people. Are you sure you want to delete it?"
+            } else if !linkedHouses.isEmpty {
+                messageText = "This address is linked to \(linkedHouses.count) houses. Are you sure you want to delete it?"
+            }
+            
             return Alert(
                 title: Text("Delete Address"),
                 message: Text(messageText),

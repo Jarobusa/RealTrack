@@ -1,5 +1,5 @@
 //
-//  AddressViiewModel.swift
+//  AddressViewModel.swift
 //  RealTrack
 //
 //  Created by Robert Williams on 3/2/25.
@@ -18,7 +18,9 @@ final class AddressViewModel: ObservableObject {
 
     /// Fetch all addresses from SwiftData
     func fetchAddresses() {
-        let fetchDescriptor = FetchDescriptor<AddressModel>(sortBy: [SortDescriptor(\.timestamp, order: .reverse)])
+        let fetchDescriptor = FetchDescriptor<AddressModel>(
+            sortBy: [SortDescriptor(\.timestamp, order: .reverse)]
+        )
         do {
             addresses = try modelContext.fetch(fetchDescriptor)
             print("✅ Fetched addresses: \(addresses.map { $0.address1 ?? "N/A" })")
@@ -27,14 +29,22 @@ final class AddressViewModel: ObservableObject {
             addresses = []
         }
         
-        if let storeURL = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first?.appendingPathComponent("default.store") {
+        if let storeURL = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first?
+            .appendingPathComponent("default.store") {
             print("📂 SQLite database path: \(storeURL.path)")
         }
     }
 
     /// Add a new address
     func addAddress(address1: String?, address2: String?, city: String?, state: String?, zip: String?) {
-        let newAddress = AddressModel(address1: address1, address2: address2, city: city, state: state, zip: zip, timestamp: Date())
+        let newAddress = AddressModel(
+            address1: address1,
+            address2: address2,
+            city: city,
+            state: state,
+            zip: zip,
+            timestamp: Date()
+        )
 
         print("📌 Attempting to insert: \(newAddress)")
 
@@ -53,38 +63,59 @@ final class AddressViewModel: ObservableObject {
 
     /// Delete an address
     func deleteAddress(at offsets: IndexSet) {
-           for index in offsets {
-               modelContext.delete(addresses[index])
-           }
+        for index in offsets {
+            modelContext.delete(addresses[index])
+        }
 
-           do {
-               try modelContext.save()
-               print("✅ Successfully deleted address")
-           } catch {
-               print("❌ Failed to delete address: \(error)")
-           }
+        do {
+            try modelContext.save()
+            print("✅ Successfully deleted address")
+        } catch {
+            print("❌ Failed to delete address: \(error)")
+        }
 
-           fetchAddresses() // Refresh the list
-       }
+        fetchAddresses() // Refresh the list
+    }
     
     /// Returns all people who have the specified address as either their home or work address
-      func findPeopleByAddress(_ address: AddressModel) -> [PersonModel] {
-          // When using UUIDs, we can use the ID directly for filtering
-          let addressID = address.id
-          
-          let descriptor = FetchDescriptor<PersonModel>(
-              predicate: #Predicate<PersonModel> { person in
-                  (person.homeAddress?.id == addressID) || (person.workAddress?.id == addressID)
-              }
-          )
-          
-          do {
-              let matchingPeople = try modelContext.fetch(descriptor)
-              print("✅ Found \(matchingPeople.count) people linked to address ID: \(addressID)")
-              return matchingPeople
-          } catch {
-              print("❌ Error finding people by address: \(error.localizedDescription)")
-              return []
-          }
-      }
+    func findPeopleByAddress(_ address: AddressModel) -> [PersonModel] {
+        // When using UUIDs, we can use the ID directly for filtering
+        let addressID = address.id
+        
+        let descriptor = FetchDescriptor<PersonModel>(
+            predicate: #Predicate<PersonModel> { person in
+                (person.homeAddress?.id == addressID) || (person.workAddress?.id == addressID)
+            }
+        )
+        
+        do {
+            let matchingPeople = try modelContext.fetch(descriptor)
+            print("✅ Found \(matchingPeople.count) people linked to address ID: \(addressID)")
+            return matchingPeople
+        } catch {
+            print("❌ Error finding people by address: \(error.localizedDescription)")
+            return []
+        }
+    }
+    
+    /// Returns all houses that have the specified address
+    func findHousesByAddress(_ address: AddressModel) -> [HouseModel] {
+        // When using UUIDs, we can use the ID directly for filtering
+        let addressID = address.id
+        
+        let descriptor = FetchDescriptor<HouseModel>(
+            predicate: #Predicate<HouseModel> { house in
+                house.address.id == addressID
+            }
+        )
+        
+        do {
+            let matchingHouses = try modelContext.fetch(descriptor)
+            print("✅ Found \(matchingHouses.count) houses linked to address ID: \(addressID)")
+            return matchingHouses
+        } catch {
+            print("❌ Error finding people by address: \(error.localizedDescription)")
+            return []
+        }
+    }
 }
