@@ -9,11 +9,17 @@ import SwiftUI
 import SwiftData
 
 struct HousessView: View {
+    let modelContext: ModelContext
     @StateObject private var viewModel: HouseViewModel
     @State private var isPresentingAddHouseView: Bool = false
 
-    init(viewModel: HouseViewModel = HouseViewModel()) {
-        _viewModel = StateObject(wrappedValue: viewModel)
+    init(modelContext: ModelContext, viewModel: HouseViewModel? = nil) {
+        self.modelContext = modelContext
+        if let viewModel = viewModel {
+            _viewModel = StateObject(wrappedValue: viewModel)
+        } else {
+            _viewModel = StateObject(wrappedValue: HouseViewModel(context: modelContext))
+        }
     }
 
     var body: some View {
@@ -38,7 +44,7 @@ struct HousessView: View {
                 }
             }
             .sheet(isPresented: $isPresentingAddHouseView) {
-                AddHouseView()
+                AddHouseView(modelContext: modelContext)
             }
         }
     }
@@ -46,13 +52,15 @@ struct HousessView: View {
 
 struct HousesView_Previews: PreviewProvider {
     static var previews: some View {
-        let mockViewModel = HouseViewModel()
+        let container = try! ModelContainer(for: HouseModel.self, AddressModel.self, PersonModel.self)
+        let modelContext = container.mainContext
+        let mockViewModel = HouseViewModel(context: modelContext)
         let mockAddress = AddressModel(address1: "123 Elm St", city: "Springfield")
         mockViewModel.houses = [
             HouseModel(name: "Smith Residence", address: mockAddress),
             HouseModel(name: "Johnson Manor", address: AddressModel(address1: "456 Oak Ave", city: "Greenville")),
             HouseModel(name: "Unnamed", address: AddressModel(address1: nil, city: nil))
         ]
-        return HousessView(viewModel: mockViewModel)
+        return HousessView(modelContext: modelContext, viewModel: mockViewModel)
     }
 }

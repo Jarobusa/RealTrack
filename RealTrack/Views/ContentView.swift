@@ -18,7 +18,7 @@ struct ContentView: View {
                     Label("Person", systemImage: "person")
                 }
 
-            HousessView()
+            HousessView(modelContext: modelContext)
                 .tabItem {
                     Label("Houses", systemImage: "house")
                 }

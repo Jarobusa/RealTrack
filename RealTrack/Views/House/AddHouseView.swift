@@ -10,9 +10,9 @@ import SwiftData
 
 struct AddHouseView: View {
     @Environment(\.dismiss) private var dismiss
-    @Environment(\.modelContext) private var modelContext
 
-    @StateObject private var houseViewModel = HouseViewModel()
+    let modelContext: ModelContext
+    @StateObject private var houseViewModel: HouseViewModel
 
     @State private var houseName: String = ""
     @State private var address1: String = ""
@@ -32,6 +32,11 @@ struct AddHouseView: View {
         !city.trimmingCharacters(in: .whitespaces).isEmpty &&
         !state.trimmingCharacters(in: .whitespaces).isEmpty &&
         !zip.trimmingCharacters(in: .whitespaces).isEmpty
+    }
+
+    init(modelContext: ModelContext) {
+        self.modelContext = modelContext
+        _houseViewModel = StateObject(wrappedValue: HouseViewModel(context: modelContext))
     }
 
     var body: some View {
@@ -85,8 +90,7 @@ struct AddHouseView: View {
                             city: city,
                             state: state,
                             zip: zip,
-                            linkedPersons: linkedPersons,
-                            context: modelContext
+                            linkedPersons: linkedPersons
                         )
                         dismiss()
                     }
@@ -108,11 +112,13 @@ struct AddHouseView: View {
         }
     }
 
-    
 }
 
 struct AddHouseView_Previews: PreviewProvider {
     static var previews: some View {
-        AddHouseView()
+        // Create a model container for the preview with the necessary model types
+        let container = try! ModelContainer(for: HouseModel.self, AddressModel.self, PersonModel.self)
+        let modelContext = container.mainContext
+        return AddHouseView(modelContext: modelContext)
     }
 }

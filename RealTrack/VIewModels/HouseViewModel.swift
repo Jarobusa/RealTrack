@@ -12,6 +12,21 @@ import SwiftUI
 final class HouseViewModel: ObservableObject {
     /// The list of all houses managed by this view model.
     @Published var houses: [HouseModel] = []
+    private let context: ModelContext
+
+    init(context: ModelContext) {
+        self.context = context
+        loadHouses()
+    }
+
+    private func loadHouses() {
+        let fetchDescriptor = FetchDescriptor<HouseModel>()
+        do {
+            houses = try context.fetch(fetchDescriptor)
+        } catch {
+            print("Error fetching houses: \(error)")
+        }
+    }
 
     /// Adds a new house to the list.
     /// - Parameters:
@@ -38,6 +53,7 @@ final class HouseViewModel: ObservableObject {
     /// Returns all houses.
     /// - Returns: An array of all HouseModel instances.
     func getAllHouses() -> [HouseModel] {
+        loadHouses()
         return houses
     }
 
@@ -50,8 +66,7 @@ final class HouseViewModel: ObservableObject {
     ///   - state: The state.
     ///   - zip: The zip code.
     ///   - linkedPersons: An array of PersonModel instances to link with the house.
-    ///   - context: The ModelContext used for saving the models.
-    func saveHouse(houseName: String, address1: String, address2: String, city: String, state: String, zip: String, linkedPersons: [PersonModel], context: ModelContext) {
+    func saveHouse(houseName: String, address1: String, address2: String, city: String, state: String, zip: String, linkedPersons: [PersonModel]) {
         let newAddress = AddressModel(
             id: UUID(),
             address1: address1,

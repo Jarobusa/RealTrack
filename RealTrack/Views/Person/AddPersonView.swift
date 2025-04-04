@@ -134,8 +134,8 @@ struct AddPersonView: View {
     }
 
     private func savePerson() {
-        let homeAddress = AddressModel(
-            address1: homeAddress1.isEmpty ? nil : homeAddress1,
+        let homeAddress: AddressModel? = homeAddress1.isEmpty ? nil : AddressModel(
+            address1: homeAddress1,
             address2: homeAddress2.isEmpty ? nil : homeAddress2,
             city: homeCity.isEmpty ? nil : homeCity,
             state: homeState.isEmpty ? nil : homeState,
@@ -143,8 +143,8 @@ struct AddPersonView: View {
             timestamp: .now
         )
 
-        let workAddress = AddressModel(
-            address1: workAddress1.isEmpty ? nil : workAddress1,
+        let workAddress: AddressModel? = workAddress1.isEmpty ? nil : AddressModel(
+            address1: workAddress1,
             address2: workAddress2.isEmpty ? nil : workAddress2,
             city: workCity.isEmpty ? nil : workCity,
             state: workState.isEmpty ? nil : workState,
