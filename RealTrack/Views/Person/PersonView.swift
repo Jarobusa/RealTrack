@@ -11,6 +11,7 @@ import MapKit
 
 struct PersonView: View {
     let person: PersonModel
+    var house: HouseModel? = nil
 
     @State private var isEditing = false
 
@@ -53,6 +54,22 @@ struct PersonView: View {
                 if person.homeAddress == nil && person.workAddress == nil {
                     Text("No addresses on file.")
                         .foregroundStyle(.secondary)
+                }
+
+                if let house = house, !house.personModel.isEmpty {
+                    Divider()
+                    Text("House Residents")
+                        .font(.title2)
+                        .padding(.top)
+                    ForEach(house.personModel, id: \.id) { resident in
+                        // Exclude the current person from the list
+                        if resident.id != person.id {
+                            NavigationLink(destination: PersonView(person: resident, house: house)) {
+                                Text("\(resident.firstName ?? "") \(resident.lastName ?? "")")
+                                    .padding(.vertical, 4)
+                            }
+                        }
+                    }
                 }
             }
             .padding()

@@ -11,6 +11,7 @@ import SwiftData
 struct HousessView: View {
     let modelContext: ModelContext
     @StateObject private var viewModel: HouseViewModel
+    @Query(sort: \HouseModel.timestamp, order: .reverse) var houses: [HouseModel]
     @State private var isPresentingAddHouseView: Bool = false
 
     init(modelContext: ModelContext, viewModel: HouseViewModel? = nil) {
@@ -24,7 +25,7 @@ struct HousessView: View {
 
     var body: some View {
         NavigationStack {
-            List(viewModel.houses, id: \.id) { house in
+            List(houses, id: \.id) { house in
                 NavigationLink(destination: HouseView(modelContext: modelContext, house: house)) {
                     VStack(alignment: .leading) {
                         Text(house.name ?? "Unnamed")
