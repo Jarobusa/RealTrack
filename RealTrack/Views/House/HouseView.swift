@@ -79,7 +79,7 @@ struct HouseView: View {
                         // Residents Section
                         if !viewModel.people(in: foundHouse).isEmpty {
                             Divider()
-                            Text("Residents")
+                            Text("People")
                                 .font(.title3)
                                 .padding(.top)
                             ForEach(viewModel.people(in: foundHouse), id: \.id) { person in
@@ -102,6 +102,13 @@ struct HouseView: View {
                     .padding()
                 }
                 .navigationTitle("House Details")
+                .toolbar {
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        NavigationLink(destination: EditHouse(house: foundHouse)) {
+                            Text("Edit")
+                        }
+                    }
+                }
             } else {
                 Text("No house available")
                     .foregroundColor(.secondary)
