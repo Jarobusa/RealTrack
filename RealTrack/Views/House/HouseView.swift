@@ -76,6 +76,27 @@ struct HouseView: View {
                         .font(.footnote)
                         .foregroundColor(.secondary)
 
+                        // Residents Section
+                        if !viewModel.people(in: foundHouse).isEmpty {
+                            Divider()
+                            Text("Residents")
+                                .font(.title3)
+                                .padding(.top)
+                            ForEach(viewModel.people(in: foundHouse), id: \.id) { person in
+                                NavigationLink(destination: PersonView(person: person)) {
+                                    VStack(alignment: .leading, spacing: 2) {
+                                        Text("\(person.firstName ?? "") \(person.lastName ?? "")")
+                                            .padding(.vertical, 2)
+                                        if let personTypeName = person.personType?.name, !personTypeName.isEmpty {
+                                            Text(personTypeName)
+                                                .font(.subheadline)
+                                                .foregroundColor(.secondary)
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
                         Spacer()
                     }
                     .padding()

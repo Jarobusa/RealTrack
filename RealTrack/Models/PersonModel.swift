@@ -24,7 +24,9 @@ final class PersonModel {
     var homeAddress: AddressModel?
     var workAddress: AddressModel?
     var personType: PersonTypeModel?
-
+    
+    @Relationship(inverse: \HouseModel.personModel) var houses: [HouseModel] = []
+    
     init(
         id: UUID = UUID(),
         firstName: String,
