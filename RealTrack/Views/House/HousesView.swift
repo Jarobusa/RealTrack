@@ -35,6 +35,13 @@ struct HousessView: View {
                             .foregroundStyle(.secondary)
                     }
                 }
+                .swipeActions {
+                    Button(role: .destructive) {
+                        deleteHouse(house)
+                    } label: {
+                        Label("Delete", systemImage: "trash")
+                    }
+                }
             }
             .navigationTitle("Houses")
             .toolbar {
@@ -49,6 +56,15 @@ struct HousessView: View {
             .sheet(isPresented: $isPresentingAddHouseView) {
                 AddHouseView(modelContext: modelContext)
             }
+        }
+    }
+    
+    private func deleteHouse(_ house: HouseModel) {
+        modelContext.delete(house)
+        do {
+            try modelContext.save()
+        } catch {
+            print("Error saving deletion: \(error)")
         }
     }
 }
