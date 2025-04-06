@@ -28,6 +28,9 @@ final class PersonModel {
     // Replace the direct relationship with houses with a relationship to HouseAssociation.
     @Relationship(inverse: \HouseAssociationModel.person) var houseAssociations: [HouseAssociationModel] = []
     
+    @Attribute private var _lastModified: Date?
+    var lastModified: Date? { _lastModified }
+    
     init(
         id: UUID = UUID(),
         firstName: String,
@@ -54,6 +57,10 @@ final class PersonModel {
         self.homeAddress = homeAddress
         self.workAddress = workAddress
         self.timestamp = timestamp
+    }
+    
+    func updateLastModified(fromDynamo timestamp: Date) {
+        _lastModified = timestamp
     }
 }
 extension PersonModel {

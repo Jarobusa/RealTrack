@@ -17,6 +17,9 @@ final class AddressModel {
     var state: String?
     var zip: String?
     var timestamp: Date
+    
+    @Attribute private var _lastModified: Date?
+    var lastModified: Date? { _lastModified }
 
     init(id: UUID = UUID(), address1: String? = nil, address2: String? = nil,
          city: String? = nil, state: String? = nil, zip: String? = nil,
@@ -28,5 +31,9 @@ final class AddressModel {
         self.state = state
         self.zip = zip
         self.timestamp = timestamp
+    }
+    
+    func updateLastModified(fromDynamo timestamp: Date) {
+        _lastModified = timestamp
     }
 }

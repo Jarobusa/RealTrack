@@ -18,6 +18,9 @@ final class OrganizationModel {
     var address: AddressModel?  // if needed
     var timestamp: Date
 
+    @Attribute private var _lastModified: Date?
+    var lastModified: Date? { _lastModified }
+    
     init(id: UUID = UUID(), name: String, contactPhone: String? = nil, email: String? = nil, website: String? = nil, address: AddressModel? = nil, timestamp: Date = .now) {
         self.id = id
         self.name = name
@@ -26,5 +29,9 @@ final class OrganizationModel {
         self.website = website
         self.address = address
         self.timestamp = timestamp
+    }
+    
+    func updateLastModified(fromDynamo timestamp: Date) {
+        _lastModified = timestamp
     }
 }
