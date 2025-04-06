@@ -20,6 +20,7 @@ struct PersistenceController {
         let schema = Schema([
             AddressModel.self,
             HouseModel.self,
+            HouseAssociationModel.self,
             PersonModel.self,
             PersonTypeModel.self,
             OrganizationModel.self

@@ -56,12 +56,13 @@ struct PersonView: View {
                         .foregroundStyle(.secondary)
                 }
 
-                if let house = house, !house.personModel.isEmpty {
+                if let house = house, !house.associations.isEmpty {
                     Divider()
                     Text("House Residents")
                         .font(.title2)
                         .padding(.top)
-                    ForEach(house.personModel, id: \.id) { resident in
+                    ForEach(house.associations, id: \.id) { association in
+                        let resident = association.person
                         // Exclude the current person from the list
                         if resident.id != person.id {
                             NavigationLink(destination: PersonView(person: resident, house: house)) {

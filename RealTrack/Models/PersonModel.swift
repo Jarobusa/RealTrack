@@ -19,13 +19,14 @@ final class PersonModel {
     var timestamp: Date
 
     @Attribute(.unique) var ein: String?
-    @Attribute(.unique) var ssn: String?  
+    @Attribute(.unique) var ssn: String?
     
     var homeAddress: AddressModel?
     var workAddress: AddressModel?
     var personType: PersonTypeModel?
     
-    @Relationship(inverse: \HouseModel.personModel) var houses: [HouseModel] = []
+    // Replace the direct relationship with houses with a relationship to HouseAssociation.
+    @Relationship(inverse: \HouseAssociationModel.person) var houseAssociations: [HouseAssociationModel] = []
     
     init(
         id: UUID = UUID(),
@@ -46,7 +47,7 @@ final class PersonModel {
         self.lastName = lastName
         self.mobilePhone = mobilePhone
         self.workPhone = workPhone
-        self.email = email  
+        self.email = email
         self.ein = ein
         self.ssn = ssn
         self.personType = personType
@@ -55,7 +56,6 @@ final class PersonModel {
         self.timestamp = timestamp
     }
 }
-
 extension PersonModel {
     var isEINValid: Bool {
         guard let ein = ein else { return true }  // Optional is okay

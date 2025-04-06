@@ -15,7 +15,8 @@ final class HouseModel {
     var address: AddressModel
     var timestamp: Date
     
-    var personModel: [PersonModel] = []
+    // Replace direct PersonModel relationship with HouseAssociation
+    @Relationship(inverse: \HouseAssociationModel.house) var associations: [HouseAssociationModel] = []
 
     init(
         id: UUID = UUID(),

@@ -28,26 +28,11 @@ final class HouseViewModel: ObservableObject {
         }
     }
 
-    /// Adds a new house to the list.
-    /// - Parameters:
-    ///   - name: The name of the house.
-    ///   - address: The address associated with the house.
-    func addHouse(name: String, address: AddressModel) {
-        let newHouse = HouseModel(name: name, address: address)
-        houses.append(newHouse)
-    }
-
-    /// Deletes the specified house from the list.
-    /// - Parameter house: The house to be removed.
-    func deleteHouse(_ house: HouseModel) {
-        houses.removeAll { $0.id == house.id }
-    }
-
     /// Returns the people associated with the specified house.
     /// - Parameter house: The house whose people should be listed.
-    /// - Returns: An array of people in the given house.
+    /// - Returns: An array of PersonModel instances associated with the house.
     func people(in house: HouseModel) -> [PersonModel] {
-        return house.personModel
+        return house.associations.map { $0.person }
     }
 
     /// Returns all houses.
@@ -65,8 +50,9 @@ final class HouseViewModel: ObservableObject {
     ///   - city: The city.
     ///   - state: The state.
     ///   - zip: The zip code.
-    ///   - linkedPersons: An array of PersonModel instances to link with the house.
+    ///   - linkedPersons: An array of PersonModel instances to associate with the house.
     func saveHouse(houseName: String, address1: String, address2: String, city: String, state: String, zip: String, linkedPersons: [PersonModel]) {
+        // Create and insert a new address.
         let newAddress = AddressModel(
             id: UUID(),
             address1: address1,
@@ -78,15 +64,23 @@ final class HouseViewModel: ObservableObject {
         )
         context.insert(newAddress)
 
+        // Create the new house.
         let newHouse = HouseModel(
             id: UUID(),
             name: houseName,
             address: newAddress,
             timestamp: Date()
         )
-        newHouse.personModel.append(contentsOf: linkedPersons)
-        context.insert(newHouse)
 
+        // For each linked person, create a HouseAssociation to record the relationship.
+        for person in linkedPersons {
+            let association = HouseAssociationModel(house: newHouse, person: person)
+            newHouse.associations.append(association)
+            context.insert(association)
+        }
+
+        // Insert the new house and save.
+        context.insert(newHouse)
         do {
             try context.save()
             houses.append(newHouse)
