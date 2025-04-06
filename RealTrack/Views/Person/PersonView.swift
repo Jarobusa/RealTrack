@@ -72,6 +72,18 @@ struct PersonView: View {
                         }
                     }
                 }
+                
+                Divider()
+                
+                // Last Updated
+                HStack {
+                    Image(systemName: "calendar")
+                    Text("Last updated on \(person.timestamp.formatted(date: .abbreviated, time: .shortened))")
+                }
+                .font(.footnote)
+                .foregroundColor(.secondary)
+                
+                Spacer()
             }
             .padding()
         }
@@ -95,10 +107,12 @@ struct PersonView: View {
             openInMaps(address)
         } label: {
             VStack(alignment: .leading, spacing: 2) {
+                // Emphasize the title text for the address (Home Address/Work Address)
                 Text(title)
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-
+                    .font(.subheadline)
+                    .fontWeight(.semibold)
+                    .foregroundStyle(.primary)
+                // The remaining address lines use a smaller, lighter style.
                 if let line1 = address.address1 { Text(line1) }
                 if let line2 = address.address2 { Text(line2) }
                 HStack {
@@ -106,11 +120,11 @@ struct PersonView: View {
                     Text(address.state ?? "")
                     Text(address.zip ?? "")
                 }
-                .font(.caption)
-                .foregroundStyle(.secondary)
             }
             .padding(.vertical, 2)
             .contentShape(Rectangle())
+            .font(.caption)
+            .foregroundStyle(.secondary)
         }
         .buttonStyle(.plain)
     }

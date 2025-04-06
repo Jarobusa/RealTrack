@@ -25,78 +25,92 @@ struct HouseView: View {
             if let foundHouse = viewModel.findHouse(by: selectedHouse.id) {
                 ScrollView {
                     VStack(alignment: .leading, spacing: 12) {
-                        // House Name
-                        Text(foundHouse.name?.isEmpty == false ? foundHouse.name! : "Unnamed House")
-                            .font(.title2)
-                            .bold()
+                        // House Name displayed as plain text.
+                        if let name = foundHouse.name, !name.isEmpty {
+                            Text(name)
+                                .font(.title2)
+                                .bold()
+                        } else {
+                            Text("Unnamed House")
+                                .font(.title2)
+                                .bold()
+                        }
 
-                        // Address
+                        // Address Details
                         VStack(alignment: .leading, spacing: 4) {
-                            Label {
-                                Text(foundHouse.address.address1 ?? "No Address")
-                            } icon: {
-                                Image(systemName: "house")
-                            }
-
-                            if let address2 = foundHouse.address.address2, !address2.isEmpty {
-                                Text(address2)
-                                    .font(.subheadline)
-                            }
-
-                            Text([
-                                foundHouse.address.city,
-                                foundHouse.address.state,
-                                foundHouse.address.zip
-                            ]
-                            .compactMap { $0 }
-                            .joined(separator: ", "))
-                            .font(.subheadline)
-
                             if let address1 = foundHouse.address.address1,
                                let city = foundHouse.address.city,
                                let state = foundHouse.address.state {
                                 let fullAddress = "\(address1), \(city), \(state)"
                                 if let encoded = fullAddress.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
                                    let url = URL(string: "http://maps.apple.com/?q=\(encoded)") {
-                                    Link(destination: url) {
-                                        Label("Open in Apple Maps", systemImage: "map.fill")
-                                            .font(.subheadline)
+                                    HStack(spacing: 4) {
+                                        // House image displayed separately
+                                        Image(systemName: "house")
                                             .foregroundColor(.blue)
-                                            .padding(.top, 4)
+                                        // Only the text is wrapped in a Link
+                                        Link(destination: url) {
+                                            Text(fullAddress)
+                                                .font(.subheadline)
+                                                .foregroundColor(.blue)
+                                        }
+                                        .buttonStyle(PlainButtonStyle())
+                                    }
+                                    .padding(.top, 4)
+                                }
+                            } else {
+                                Text("No Address")
+                                    .font(.subheadline)
+                            }
+                            
+                            // Optionally display address line 2
+                            if let address2 = foundHouse.address.address2, !address2.isEmpty {
+                                Text(address2)
+                                    .font(.subheadline)
+                            }
+                        }
+
+                        // Residents Section: Group people by personType
+                        if !viewModel.people(in: foundHouse).isEmpty {
+                            Divider()
+                            
+                            Text("People")
+                                .font(.title3)
+                                .padding(.top)
+                            Group {
+                                // Group people by their personType name (or "Unknown" if missing)
+                                let groupedPeople = Dictionary(grouping: viewModel.people(in: foundHouse)) { person in
+                                    person.personType?.name ?? "Unknown"
+                                }
+                                ForEach(groupedPeople.keys.sorted(), id: \.self) { typeKey in
+                                    VStack(alignment: .leading) {
+                                        Text(typeKey)
+                                            .font(.headline)
+                                            .padding(.vertical, 4)
+                                        ForEach(groupedPeople[typeKey] ?? [], id: \.id) { person in
+                                            NavigationLink(destination: PersonView(person: person)) {
+                                                VStack(alignment: .leading, spacing: 2) {
+                                                    Text("\(person.firstName ?? "") \(person.lastName ?? "")")
+                                                        .padding(.vertical, 2)
+                                                }
+                                            }
+                                        }
                                     }
                                 }
                             }
                         }
-
-                        // Timestamp
+                        
+                        // Divider separating house info from the last updated timestamp.
+                        Divider()
+                        
+                        // Last Updated
                         HStack {
                             Image(systemName: "calendar")
                             Text("Last updated on \(foundHouse.timestamp.formatted(date: .abbreviated, time: .shortened))")
                         }
                         .font(.footnote)
                         .foregroundColor(.secondary)
-
-                        // Residents Section
-                        if !viewModel.people(in: foundHouse).isEmpty {
-                            Divider()
-                            Text("People")
-                                .font(.title3)
-                                .padding(.top)
-                            ForEach(viewModel.people(in: foundHouse), id: \.id) { person in
-                                NavigationLink(destination: PersonView(person: person)) {
-                                    VStack(alignment: .leading, spacing: 2) {
-                                        Text("\(person.firstName ?? "") \(person.lastName ?? "")")
-                                            .padding(.vertical, 2)
-                                        if let personTypeName = person.personType?.name, !personTypeName.isEmpty {
-                                            Text(personTypeName)
-                                                .font(.subheadline)
-                                                .foregroundColor(.secondary)
-                                        }
-                                    }
-                                }
-                            }
-                        }
-
+                        
                         Spacer()
                     }
                     .padding()
@@ -104,7 +118,7 @@ struct HouseView: View {
                 .navigationTitle("House Details")
                 .toolbar {
                     ToolbarItem(placement: .navigationBarTrailing) {
-                        NavigationLink(destination: EditHouse(house: foundHouse)) {
+                        NavigationLink(destination: EditHouseView(house: foundHouse)) {
                             Text("Edit")
                         }
                     }
