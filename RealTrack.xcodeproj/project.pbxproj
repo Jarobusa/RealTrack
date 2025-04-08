@@ -6,6 +6,11 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		DCE817682DA32D4400A8E50B /* AWSClientRuntime in Frameworks */ = {isa = PBXBuildFile; productRef = DCE817672DA32D4400A8E50B /* AWSClientRuntime */; };
+		DCE8176A2DA32D4400A8E50B /* AWSDynamoDB in Frameworks */ = {isa = PBXBuildFile; productRef = DCE817692DA32D4400A8E50B /* AWSDynamoDB */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		DC79AB652D7505C400FCAF70 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -52,6 +57,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DCE8176A2DA32D4400A8E50B /* AWSDynamoDB in Frameworks */,
+				DCE817682DA32D4400A8E50B /* AWSClientRuntime in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -112,6 +119,8 @@
 			);
 			name = RealTrack;
 			packageProductDependencies = (
+				DCE817672DA32D4400A8E50B /* AWSClientRuntime */,
+				DCE817692DA32D4400A8E50B /* AWSDynamoDB */,
 			);
 			productName = RealTrack;
 			productReference = DC79AB522D7505C300FCAF70 /* RealTrack.app */;
@@ -195,6 +204,9 @@
 			);
 			mainGroup = DC79AB492D7505C300FCAF70;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				DCE817662DA32D4400A8E50B /* XCRemoteSwiftPackageReference "aws-sdk-swift" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = DC79AB532D7505C300FCAF70 /* Products */;
 			projectDirPath = "";
@@ -393,6 +405,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = RealTrack/RealTrack.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_ASSET_PATHS = "\"RealTrack/Preview Content\"";
@@ -423,6 +436,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = RealTrack/RealTrack.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_ASSET_PATHS = "\"RealTrack/Preview Content\"";
@@ -560,6 +574,30 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		DCE817662DA32D4400A8E50B /* XCRemoteSwiftPackageReference "aws-sdk-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/awslabs/aws-sdk-swift";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.2.53;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		DCE817672DA32D4400A8E50B /* AWSClientRuntime */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = DCE817662DA32D4400A8E50B /* XCRemoteSwiftPackageReference "aws-sdk-swift" */;
+			productName = AWSClientRuntime;
+		};
+		DCE817692DA32D4400A8E50B /* AWSDynamoDB */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = DCE817662DA32D4400A8E50B /* XCRemoteSwiftPackageReference "aws-sdk-swift" */;
+			productName = AWSDynamoDB;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = DC79AB4A2D7505C300FCAF70 /* Project object */;
 }
