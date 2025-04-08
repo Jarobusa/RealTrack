@@ -19,8 +19,8 @@ final class AddressModel {
     var timestamp: Date = Date()
     
     @Relationship(inverse: \HouseModel.address) var house: HouseModel?
-    @Relationship(inverse: \PersonModel.homeAddress) var homeResidents: [PersonModel] = []
-    @Relationship(inverse: \PersonModel.workAddress) var workResidents: [PersonModel] = []
+    @Relationship(inverse: \PersonModel.homeAddress) var homeResidents: [PersonModel]?
+    @Relationship(inverse: \PersonModel.workAddress) var workResidents: [PersonModel]?
     @Relationship(inverse: \OrganizationModel.address) var organization: OrganizationModel?
 
     init(id: UUID = UUID(), address1: String? = nil, address2: String? = nil,
