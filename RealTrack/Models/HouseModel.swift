@@ -10,10 +10,10 @@ import SwiftData
 
 @Model
 final class HouseModel {
-    @Attribute(.unique) var id: UUID
+    var id: UUID = UUID()
     var name: String?
     var address: AddressModel
-    var timestamp: Date
+    var timestamp: Date = Date()
     
     // Replace direct PersonModel relationship with HouseAssociation
     @Relationship(inverse: \HouseAssociationModel.house) var associations: [HouseAssociationModel] = []

@@ -10,13 +10,13 @@ import SwiftData
 
 @Model
 final class PersonModel {
-    @Attribute(.unique) var id: UUID
+    var id: UUID = UUID()
     var firstName: String?
     var lastName: String?
     var mobilePhone: String?
     var workPhone: String?
     var email: String?
-    var timestamp: Date
+    var timestamp: Date = Date()
 
     @Attribute(.unique) var ein: String?
     @Attribute(.unique) var ssn: String?

@@ -215,8 +215,7 @@ struct EditPersonView: View {
                     address2: homeAddress2.isEmpty ? nil : homeAddress2,
                     city: homeCity.isEmpty ? nil : homeCity,
                     state: homeState.isEmpty ? nil : homeState,
-                    zip: homeZip.isEmpty ? nil : homeZip,
-                    timestamp: .now
+                    zip: homeZip.isEmpty ? nil : homeZip
                 )
             }
         }
@@ -237,8 +236,7 @@ struct EditPersonView: View {
                     address2: workAddress2.isEmpty ? nil : workAddress2,
                     city: workCity.isEmpty ? nil : workCity,
                     state: workState.isEmpty ? nil : workState,
-                    zip: workZip.isEmpty ? nil : workZip,
-                    timestamp: .now
+                    zip: workZip.isEmpty ? nil : workZip
                 )
             }
         }
@@ -250,50 +248,5 @@ struct EditPersonView: View {
         } catch {
             print("❌ Error saving person: \(error)")
         }
-    }
-}
-
-#Preview {
-    do {
-        let container = try ModelContainer(
-            for: Schema([
-                PersonModel.self,
-                PersonTypeModel.self,
-                AddressModel.self,
-            ]),
-            configurations: [ModelConfiguration(isStoredInMemoryOnly: true)]
-        )
-
-        let personType = PersonTypeModel(name: "Owner")
-    
-        let person = PersonModel(
-            firstName: "Jane",
-            lastName: "Doe",
-            mobilePhone: "1234567890",
-            workPhone: "9876543210",
-            email: "jane@example.com",
-            ein: nil,
-            ssn: nil,
-            personType: personType
-        )
-
-        let address = AddressModel(
-            address1: "123 Main St",
-            address2: "Apt 4B",
-            city: "New York",
-            state: "NY",
-            zip: "10001"
-        )
-
-        container.mainContext.insert(personType)
-        container.mainContext.insert(person)
-        container.mainContext.insert(address)
-
-        return NavigationStack {
-            EditPersonView(person: person)
-        }
-        .modelContainer(container)
-    } catch {
-        fatalError("❌ Failed to create preview container: \(error)")
     }
 }

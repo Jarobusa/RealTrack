@@ -78,28 +78,3 @@ struct EditAddressView: View {
         dismiss()  // Simply dismiss without saving
     }
 }
-
-#Preview {
-    do {
-        // ✅ Create a mock in-memory model container for preview
-        let modelContainer = try ModelContainer(for: Schema([AddressModel.self]), configurations: [ModelConfiguration(isStoredInMemoryOnly: true)])
-
-        // ✅ Create a sample AddressModel object
-        let sampleAddress = AddressModel(
-            address1: "123 Main St",
-            address2: "Apt 4B",
-            city: "New York",
-            state: "NY",
-            zip: "10001",
-            timestamp: Date()
-        )
-
-        // ✅ Insert the sample address into the model context
-        modelContainer.mainContext.insert(sampleAddress)
-
-        return EditAddressView(address: sampleAddress)
-            .modelContainer(modelContainer)  // ✅ Attach model container to preview
-    } catch {
-        fatalError("Failed to create preview ModelContainer: \(error)")
-    }
-}

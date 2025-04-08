@@ -42,8 +42,7 @@ final class AddressViewModel: ObservableObject {
             address2: address2,
             city: city,
             state: state,
-            zip: zip,
-            timestamp: Date()
+            zip: zip
         )
 
         print("📌 Attempting to insert: \(newAddress)")

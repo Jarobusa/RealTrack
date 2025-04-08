@@ -78,8 +78,7 @@ struct AddAddressView: View {
             address2: address2.isEmpty ? nil : address2,
             city: city,
             state: state,
-            zip: zip,
-            timestamp: Date()
+            zip: zip
         )
         
         modelContext.insert(newAddress)

@@ -59,8 +59,7 @@ final class HouseViewModel: ObservableObject {
             address2: address2.isEmpty ? nil : address2,
             city: city,
             state: state,
-            zip: zip,
-            timestamp: Date()
+            zip: zip
         )
         context.insert(newAddress)
 
@@ -68,8 +67,7 @@ final class HouseViewModel: ObservableObject {
         let newHouse = HouseModel(
             id: UUID(),
             name: houseName,
-            address: newAddress,
-            timestamp: Date()
+            address: newAddress
         )
 
         // For each linked person, create a HouseAssociation to record the relationship.
