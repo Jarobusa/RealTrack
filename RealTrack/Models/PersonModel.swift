@@ -16,10 +16,9 @@ final class PersonModel {
     var mobilePhone: String?
     var workPhone: String?
     var email: String?
+    var ein: String?
+    var ssn: String?
     var timestamp: Date = Date()
-
-    @Attribute(.unique) var ein: String?
-    @Attribute(.unique) var ssn: String?
     
     var homeAddress: AddressModel?
     var workAddress: AddressModel?

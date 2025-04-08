@@ -14,6 +14,8 @@ final class PersonTypeModel {
     var name: String?
     var timestamp: Date = Date()
 
+    @Relationship(inverse: \PersonModel.personType) var people: [PersonModel] = []
+    
     init(id: UUID = UUID(), name: String? = nil, timestamp: Date = Date()) {
         self.id = id
         self.name = name
