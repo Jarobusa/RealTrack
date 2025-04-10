@@ -31,8 +31,9 @@ final class HouseViewModel: ObservableObject {
     /// Returns the people associated with the specified house.
     /// - Parameter house: The house whose people should be listed.
     /// - Returns: An array of PersonModel instances associated with the house.
-    func people(in house: HouseModel) -> [PersonModel] {
-        return house.associations.map { $0.person }
+    func people(in house: HouseModel) -> [PersonModel]? {
+        let persons = house.associations.compactMap { $0.person }
+        return persons.isEmpty ? nil : persons
     }
 
     /// Returns all houses.

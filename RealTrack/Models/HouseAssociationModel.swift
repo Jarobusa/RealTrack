@@ -14,8 +14,8 @@ final class HouseAssociationModel {
     var isActive: Bool = true
     var role: String?
     
-    var house: HouseModel
-    var person: PersonModel
+    var house: HouseModel?
+    var person: PersonModel?
 
     init(house: HouseModel, person: PersonModel, isActive: Bool = true, role: String? = nil) {
         self.id = UUID()

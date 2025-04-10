@@ -36,76 +36,110 @@ struct EditHouseView: View {
     }
 
     var body: some View {
+        FormContent
+            .navigationTitle("Edit House")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                leadingToolbarItems
+                trailingToolbarItems
+            }
+            .sheet(isPresented: $showAddAssociationSheet) {
+                SelectPersonAssociationView { selectedPerson in
+                    let newAssociation = HouseAssociationModel(house: house, person: selectedPerson, isActive: true, role: nil)
+                    house.associations.append(newAssociation)
+                    context.insert(newAssociation)
+                }
+            }
+    }
+    
+    private var FormContent: some View {
         Form {
-            Section(header: Text("House Details")) {
-                TextField("House Name", text: $houseName)
+            houseDetailsSection
+            addressSection
+            associationsSection
+        }
+    }
+    
+    private var houseDetailsSection: some View {
+        Section(header: Text("House Details")) {
+            TextField("House Name", text: $houseName)
+        }
+    }
+    
+    private var addressSection: some View {
+        Section(header: Text("Address")) {
+            TextField("Address Line 1", text: $address1)
+            TextField("Address Line 2", text: $address2)
+            TextField("City", text: $city)
+            TextField("State", text: $state)
+            TextField("Zip", text: $zip)
+        }
+    }
+    
+    private var associationsSection: some View {
+        Section(header: Text("Associations")) {
+            if house.associations.isEmpty {
+                Text("No associations yet.")
+                    .foregroundColor(.secondary)
+            } else {
+                ForEach(house.associations, id: \.id) { association in
+                    AssociationRow(association: association)
+                }
             }
+            Button("Add Association") {
+                showAddAssociationSheet = true
+            }
+        }
+    }
+    
+    private var leadingToolbarItems: some ToolbarContent {
+        ToolbarItem(placement: .navigationBarLeading) {
+            Button("Cancel") {
+                dismiss()
+            }
+        }
+    }
+    
+    private var trailingToolbarItems: some ToolbarContent {
+        ToolbarItem(placement: .navigationBarTrailing) {
+            Button("Save") {
+                saveHouse()
+            }
+        }
+    }
+    
+    private func saveHouse() {
+        // Update the house model with edited values
+        house.name = houseName
+        house.address.address1 = address1
+        house.address.address2 = address2.isEmpty ? nil : address2
+        house.address.city = city
+        house.address.state = state
+        house.address.zip = zip
 
-            Section(header: Text("Address")) {
-                TextField("Address Line 1", text: $address1)
-                TextField("Address Line 2", text: $address2)
-                TextField("City", text: $city)
-                TextField("State", text: $state)
-                TextField("Zip", text: $zip)
-            }
-            
-            Section(header: Text("Associations")) {
-                if house.associations.isEmpty {
-                    Text("No associations yet.")
-                        .foregroundColor(.secondary)
-                } else {
-                    ForEach(house.associations, id: \.id) { association in
-                        VStack(alignment: .leading) {
-                            Text("\(association.person.firstName ?? "") \(association.person.lastName ?? "")")
-                                .font(.headline)
-                            if let role = association.role, !role.isEmpty {
-                                Text("Role: \(role)")
-                                    .font(.subheadline)
-                            }
-                        }
-                        .padding(.vertical, 4)
-                    }
-                }
-                Button("Add Association") {
-                    showAddAssociationSheet = true
-                }
-            }
+        // Save changes via the model context
+        do {
+            try context.save()
+            dismiss()
+        } catch {
+            print("Error saving house: \(error)")
         }
-        .navigationTitle("Edit House")
-        .navigationBarTitleDisplayMode(.inline)
-        .toolbar {
-            ToolbarItem(placement: .navigationBarLeading) {
-                Button("Cancel") {
-                    dismiss()
-                }
-            }
-            ToolbarItem(placement: .navigationBarTrailing) {
-                Button("Save") {
-                    // Update the house model with edited values
-                    house.name = houseName
-                    house.address.address1 = address1
-                    house.address.address2 = address2.isEmpty ? nil : address2
-                    house.address.city = city
-                    house.address.state = state
-                    house.address.zip = zip
+    }
+}
 
-                    // Save changes via the model context
-                    do {
-                        try context.save()
-                        dismiss()
-                    } catch {
-                        print("Error saving house: \(error)")
-                    }
-                }
+struct AssociationRow: View {
+    let association: HouseAssociationModel
+    
+    var body: some View {
+        VStack(alignment: .leading) {
+            Text("\(association.person?.firstName ?? "") \(association.person?.lastName ?? "")")
+                .font(.headline)
+            if let role = association.role, !role.isEmpty {
+                Text("Role: \(role)")
+                    .font(.subheadline)
             }
         }
-        .sheet(isPresented: $showAddAssociationSheet) {
-            SelectPersonAssociationView { selectedPerson in
-                let newAssociation = HouseAssociationModel(house: house, person: selectedPerson, isActive: true, role: nil)
-                house.associations.append(newAssociation)
-                context.insert(newAssociation)
-            }
-        }
+        .padding(.vertical, 4)
     }
 }
 

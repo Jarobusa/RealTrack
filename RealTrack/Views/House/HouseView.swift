@@ -71,7 +71,10 @@ struct HouseView: View {
                         }
 
                         // Residents Section: Group people by personType
-                        if !viewModel.people(in: foundHouse).isEmpty {
+                        if let people = viewModel.people(in: foundHouse), !people.isEmpty {
+                            Divider()
+                            // other views...
+                        }
                             Divider()
                             
                             Text("People")
@@ -79,7 +82,7 @@ struct HouseView: View {
                                 .padding(.top)
                             Group {
                                 // Group people by their personType name (or "Unknown" if missing)
-                                let groupedPeople = Dictionary(grouping: viewModel.people(in: foundHouse)) { person in
+                                let groupedPeople = Dictionary(grouping: viewModel.people(in: foundHouse) ?? []) { person in
                                     person.personType?.name ?? "Unknown"
                                 }
                                 ForEach(groupedPeople.keys.sorted(), id: \.self) { typeKey in
@@ -130,4 +133,4 @@ struct HouseView: View {
             }
         }
     }
-}
+
