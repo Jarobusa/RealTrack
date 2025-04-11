@@ -1,21 +1,30 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="23788" systemVersion="24E248" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithSwiftData="YES" userDefinedModelVersionIdentifier="">
-    <entity name="AddressEntity" representedClassName="AddressEntity" syncable="YES" codeGenerationType="class">
+    <entity name="AddressEntity" representedClassName="AddressEntity" syncable="YES">
         <attribute name="address1" attributeType="String"/>
         <attribute name="address2" optional="YES" attributeType="String"/>
         <attribute name="city" attributeType="String"/>
-        <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
-        <attribute name="lastChanged" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="state" attributeType="String"/>
         <attribute name="zipCode" attributeType="String"/>
     </entity>
-    <entity name="PersonEntity" representedClassName="PersonEntity" syncable="YES" codeGenerationType="class">
+    <entity name="HouseAssociationEntity" representedClassName="HouseAssociationEntity" syncable="YES">
+        <attribute name="role" attributeType="String"/>
+        <relationship name="house" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="HouseEntity" inverseName="person" inverseEntity="HouseEntity"/>
+        <relationship name="person" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="PersonEntity" inverseName="house" inverseEntity="PersonEntity"/>
+    </entity>
+    <entity name="HouseEntity" representedClassName="HouseEntity" syncable="YES">
+        <attribute name="name" attributeType="String"/>
+        <relationship name="address" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="AddressEntity"/>
+        <relationship name="person" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="HouseAssociationEntity" inverseName="house" inverseEntity="HouseAssociationEntity"/>
+    </entity>
+    <entity name="PersonEntity" representedClassName="PersonEntity" syncable="YES">
         <attribute name="email" optional="YES" attributeType="String"/>
         <attribute name="firstName" attributeType="String"/>
-        <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
-        <attribute name="lastChanged" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="lastName" optional="YES" attributeType="String"/>
         <attribute name="mobilePhone" optional="YES" attributeType="String"/>
         <attribute name="workPhone" optional="YES" attributeType="String"/>
+        <relationship name="homeAddress" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="AddressEntity"/>
+        <relationship name="house" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="HouseAssociationEntity" inverseName="person" inverseEntity="HouseAssociationEntity"/>
+        <relationship name="workAddress" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="AddressEntity"/>
     </entity>
 </model>
