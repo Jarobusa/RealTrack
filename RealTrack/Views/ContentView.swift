@@ -13,26 +13,11 @@ struct ContentView: View {
 
     var body: some View {
         TabView {
-            PeopleView()
-                .tabItem {
-                    Label("Person", systemImage: "person")
-                }
-
-            HousessView(modelContext: modelContext)
-                .tabItem {
-                    Label("Houses", systemImage: "house")
-                }
-            
-            AddressesView(modelContext: modelContext)
-                .tabItem {
-                    Label("Addresses", systemImage: "building.columns")
-                }
-
+   
         }
     }
 }
 
 #Preview {
     ContentView()
-        .modelContainer(for: [AddressModel.self, PersonModel.self], inMemory: true)
 }

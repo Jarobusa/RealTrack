@@ -13,14 +13,12 @@ struct RealTrackApp: App {
     let persistenceController = PersistenceController.shared
 
     init() {
-        let context = persistenceController.container.mainContext
-        seedPersonTypesIfNeeded(in: context)
-    }
+         }
     
     var body: some Scene {
         WindowGroup {
             ContentView()
-                .modelContainer(persistenceController.container)
+            
         }
     }
 }
