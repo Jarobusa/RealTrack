@@ -2,7 +2,7 @@
 //  HouseAssociationEntity+CoreDataProperties.swift
 //  RealTrack
 //
-//  Created by Robert Williams on 4/11/25.
+//  Created by Robert Williams on 4/12/25.
 //
 //
 
@@ -17,8 +17,8 @@ extension HouseAssociationEntity {
     }
 
     @NSManaged public var role: String?
-    @NSManaged public var person: PersonEntity?
     @NSManaged public var house: HouseEntity?
+    @NSManaged public var person: PersonEntity?
 
 }
 
