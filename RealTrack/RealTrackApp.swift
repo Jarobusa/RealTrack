@@ -6,20 +6,25 @@
 //
 
 import SwiftUI
-import SwiftData
+import CoreData
 
 @main
 struct RealTrackApp: App {
-    let persistenceController = PersistenceController.shared
+    let persistentContainer: NSPersistentContainer
 
     init() {
-         }
-    
+        persistentContainer = NSPersistentContainer(name: "RealTrackModel")
+        persistentContainer.loadPersistentStores { _, error in
+            if let error = error {
+                fatalError("Core Data load error: \(error)")
+            }
+        }
+    }
+
     var body: some Scene {
         WindowGroup {
             ContentView()
-            
+                .environment(\.managedObjectContext, persistentContainer.viewContext)
         }
     }
 }
-
