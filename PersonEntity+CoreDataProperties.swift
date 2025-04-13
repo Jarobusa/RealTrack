@@ -24,6 +24,7 @@ extension PersonEntity {
     @NSManaged public var homeAddress: AddressEntity?
     @NSManaged public var houseAssociations: NSSet?
     @NSManaged public var notes: NSSet?
+    @NSManaged public var role: RoleEntity?
     @NSManaged public var workAddress: AddressEntity?
 
 }

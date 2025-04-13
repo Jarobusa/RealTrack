@@ -1,10 +1,3 @@
-//
-//  ContentView.swift
-//  RealTrack
-//
-//  Created by Robert Williams on 3/2/25.
-//
-
 import CoreData
 import SwiftUI
 
@@ -32,14 +25,7 @@ struct ContentView: View {
 }
 
 #Preview {
-    let container = NSPersistentContainer(name: "RealTrackModel")
-    container.persistentStoreDescriptions.first!.url = URL(fileURLWithPath: "/dev/null")
-    container.loadPersistentStores { _, error in
-        if let error = error {
-            fatalError("Preview load error: \(error)")
-        }
-    }
-
+    let previewManager = CoreDataManager.preview
     return ContentView()
-        .environment(\.managedObjectContext, container.viewContext)
+        .environment(\.managedObjectContext, previewManager.context)
 }

@@ -16,7 +16,7 @@ extension HouseAssociationEntity {
         return NSFetchRequest<HouseAssociationEntity>(entityName: "HouseAssociationEntity")
     }
 
-    @NSManaged public var role: String?
+    @NSManaged public var name: String?
     @NSManaged public var house: HouseEntity?
     @NSManaged public var person: PersonEntity?
 

@@ -9,12 +9,15 @@ import CoreData
 import SwiftUI
 
 struct PeopleView: View {
+    @Environment(\.managedObjectContext) private var context
+
     @FetchRequest(
         sortDescriptors: [NSSortDescriptor(keyPath: \PersonEntity.firstName, ascending: true)],
         animation: .default
     ) private var people: FetchedResults<PersonEntity>
-    
+
     @State private var searchText = ""
+    @State private var showingAddPerson = false
 
     var filteredPeople: [PersonEntity] {
         if searchText.isEmpty {
@@ -44,7 +47,19 @@ struct PeopleView: View {
             }
             .navigationTitle("People")
             .searchable(text: $searchText)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button(action: {
+                        showingAddPerson = true
+                    }) {
+                        Label("Add Person", systemImage: "plus")
+                    }
+                }
+            }
+            .sheet(isPresented: $showingAddPerson) {
+                AddPersonView()
+                    .environment(\.managedObjectContext, context)
+            }
         }
     }
 }
-

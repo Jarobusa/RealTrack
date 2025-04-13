@@ -12,7 +12,7 @@
         <relationship name="residentsWork" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="PersonEntity" inverseName="workAddress" inverseEntity="PersonEntity"/>
     </entity>
     <entity name="HouseAssociationEntity" representedClassName="HouseAssociationEntity" syncable="YES">
-        <attribute name="role" attributeType="String"/>
+        <attribute name="name" attributeType="String"/>
         <relationship name="house" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="HouseEntity" inverseName="personAssociations" inverseEntity="HouseEntity"/>
         <relationship name="person" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="PersonEntity" inverseName="houseAssociations" inverseEntity="PersonEntity"/>
     </entity>
@@ -44,6 +44,11 @@
         <relationship name="homeAddress" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="AddressEntity" inverseName="residentsHome" inverseEntity="AddressEntity"/>
         <relationship name="houseAssociations" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="HouseAssociationEntity" inverseName="person" inverseEntity="HouseAssociationEntity"/>
         <relationship name="notes" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="NoteEntity" inverseName="people" inverseEntity="NoteEntity"/>
+        <relationship name="role" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="RoleEntity" inverseName="people" inverseEntity="RoleEntity"/>
         <relationship name="workAddress" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="AddressEntity" inverseName="residentsWork" inverseEntity="AddressEntity"/>
+    </entity>
+    <entity name="RoleEntity" representedClassName="RoleEntity" syncable="YES">
+        <attribute name="name" optional="YES" attributeType="String"/>
+        <relationship name="people" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="PersonEntity" inverseName="role" inverseEntity="PersonEntity"/>
     </entity>
 </model>

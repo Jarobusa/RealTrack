@@ -20,6 +20,8 @@
 		DC4088AF2DAB1BDE005F341B /* NoteEntity+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC4088AD2DAB1BDE005F341B /* NoteEntity+CoreDataProperties.swift */; };
 		DC4088B22DAB1DA9005F341B /* OrganizationEntity+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC4088B12DAB1DA9005F341B /* OrganizationEntity+CoreDataProperties.swift */; };
 		DC4088B32DAB1DA9005F341B /* OrganizationEntity+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC4088B02DAB1DA9005F341B /* OrganizationEntity+CoreDataClass.swift */; };
+		DC4088EF2DAB4166005F341B /* RoleEntity+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC4088EE2DAB4166005F341B /* RoleEntity+CoreDataProperties.swift */; };
+		DC4088F02DAB4166005F341B /* RoleEntity+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC4088ED2DAB4166005F341B /* RoleEntity+CoreDataClass.swift */; };
 		DCD20BD82DA8A2C700500652 /* RealTrackModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = DCD20BD62DA8A2C700500652 /* RealTrackModel.xcdatamodeld */; };
 /* End PBXBuildFile section */
 
@@ -54,6 +56,8 @@
 		DC4088AD2DAB1BDE005F341B /* NoteEntity+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NoteEntity+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		DC4088B02DAB1DA9005F341B /* OrganizationEntity+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrganizationEntity+CoreDataClass.swift"; sourceTree = "<group>"; };
 		DC4088B12DAB1DA9005F341B /* OrganizationEntity+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrganizationEntity+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		DC4088ED2DAB4166005F341B /* RoleEntity+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "RoleEntity+CoreDataClass.swift"; sourceTree = "<group>"; };
+		DC4088EE2DAB4166005F341B /* RoleEntity+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "RoleEntity+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		DC79AB522D7505C300FCAF70 /* RealTrack.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RealTrack.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DC79AB642D7505C400FCAF70 /* RealTrackTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RealTrackTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		DC79AB6E2D7505C400FCAF70 /* RealTrackUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RealTrackUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -106,6 +110,8 @@
 		DC79AB492D7505C300FCAF70 = {
 			isa = PBXGroup;
 			children = (
+				DC4088ED2DAB4166005F341B /* RoleEntity+CoreDataClass.swift */,
+				DC4088EE2DAB4166005F341B /* RoleEntity+CoreDataProperties.swift */,
 				DC4088B02DAB1DA9005F341B /* OrganizationEntity+CoreDataClass.swift */,
 				DC4088B12DAB1DA9005F341B /* OrganizationEntity+CoreDataProperties.swift */,
 				DC4088AC2DAB1BDE005F341B /* NoteEntity+CoreDataClass.swift */,
@@ -293,6 +299,8 @@
 				DC4088A42DA9C4E4005F341B /* HouseEntity+CoreDataClass.swift in Sources */,
 				DC4088A52DA9C4E4005F341B /* HouseEntity+CoreDataProperties.swift in Sources */,
 				DC4088A62DA9C4E4005F341B /* AddressEntity+CoreDataProperties.swift in Sources */,
+				DC4088EF2DAB4166005F341B /* RoleEntity+CoreDataProperties.swift in Sources */,
+				DC4088F02DAB4166005F341B /* RoleEntity+CoreDataClass.swift in Sources */,
 				DC4088A72DA9C4E4005F341B /* AddressEntity+CoreDataClass.swift in Sources */,
 				DCD20BD82DA8A2C700500652 /* RealTrackModel.xcdatamodeld in Sources */,
 			);
