@@ -17,6 +17,7 @@ class CoreDataManager {
         }
 
         self.container = container
+        deleteAllData()
         seedDefaultRolesIfNeeded()
     }
 
@@ -28,21 +29,52 @@ class CoreDataManager {
 
     private func seedDefaultRolesIfNeeded() {
         let request: NSFetchRequest<RoleEntity> = RoleEntity.fetchRequest()
-        request.fetchLimit = 1
 
         do {
-            let count = try context.count(for: request)
-            if count == 0 {
-                let roles = ["Owner", "Renter", "Handy Man"]
-                for name in roles {
-                    let role = RoleEntity(context: context)
-                    role.name = name
-                }
+            let existingRoles = try context.fetch(request).map { $0.name ?? "" }
+
+            let rolesToInsert = ["Owner", "Renter", "Handy Man"].filter { role in
+                !existingRoles.contains(role)
+            }
+
+            for name in rolesToInsert {
+                let role = RoleEntity(context: context)
+                role.id = UUID()
+                role.name = name
+                print("🌱 Seeding role: \(name), id: \(role.id?.uuidString ?? "nil")")
+            }
+
+            if !rolesToInsert.isEmpty {
                 try context.save()
                 print("✅ Seeded default roles.")
             }
+
         } catch {
             print("❌ Failed to seed roles: \(error)")
+        }
+    }
+    
+    func deleteAllData() {
+        let entities = container.managedObjectModel.entities
+
+        for entity in entities {
+            guard let name = entity.name else { continue }
+            let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: name)
+            let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
+
+            do {
+                try context.execute(batchDeleteRequest)
+                print("🗑️ Deleted all data for entity: \(name)")
+            } catch {
+                print("❌ Failed to delete data for \(name): \(error)")
+            }
+        }
+
+        do {
+            try context.save()
+            print("✅ All data deleted.")
+        } catch {
+            print("❌ Failed to save context after deletion: \(error)")
         }
     }
 }

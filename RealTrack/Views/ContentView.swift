@@ -20,6 +20,11 @@ struct ContentView: View {
                 .tabItem {
                     Label("Settings", systemImage: "gear")
                 }
+            
+            RolesListView()
+                .tabItem {
+                    Label("Roles", systemImage: "tag")
+                }
         }
     }
 }

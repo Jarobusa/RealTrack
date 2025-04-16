@@ -7,21 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		DC4088A02DA9C4E4005F341B /* HouseAssociationEntity+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC40889A2DA9C4E4005F341B /* HouseAssociationEntity+CoreDataClass.swift */; };
-		DC4088A12DA9C4E4005F341B /* PersonEntity+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC40889E2DA9C4E4005F341B /* PersonEntity+CoreDataClass.swift */; };
-		DC4088A22DA9C4E4005F341B /* PersonEntity+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC40889F2DA9C4E4005F341B /* PersonEntity+CoreDataProperties.swift */; };
-		DC4088A32DA9C4E4005F341B /* HouseAssociationEntity+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC40889B2DA9C4E4005F341B /* HouseAssociationEntity+CoreDataProperties.swift */; };
-		DC4088A42DA9C4E4005F341B /* HouseEntity+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC40889C2DA9C4E4005F341B /* HouseEntity+CoreDataClass.swift */; };
-		DC4088A52DA9C4E4005F341B /* HouseEntity+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC40889D2DA9C4E4005F341B /* HouseEntity+CoreDataProperties.swift */; };
-		DC4088A62DA9C4E4005F341B /* AddressEntity+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC4088992DA9C4E4005F341B /* AddressEntity+CoreDataProperties.swift */; };
-		DC4088A72DA9C4E4005F341B /* AddressEntity+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC4088982DA9C4E4005F341B /* AddressEntity+CoreDataClass.swift */; };
-		DC4088AB2DA9C73C005F341B /* BaseManagedObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC4088AA2DA9C73A005F341B /* BaseManagedObject.swift */; };
-		DC4088AE2DAB1BDE005F341B /* NoteEntity+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC4088AC2DAB1BDE005F341B /* NoteEntity+CoreDataClass.swift */; };
-		DC4088AF2DAB1BDE005F341B /* NoteEntity+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC4088AD2DAB1BDE005F341B /* NoteEntity+CoreDataProperties.swift */; };
-		DC4088B22DAB1DA9005F341B /* OrganizationEntity+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC4088B12DAB1DA9005F341B /* OrganizationEntity+CoreDataProperties.swift */; };
-		DC4088B32DAB1DA9005F341B /* OrganizationEntity+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC4088B02DAB1DA9005F341B /* OrganizationEntity+CoreDataClass.swift */; };
-		DC4088EF2DAB4166005F341B /* RoleEntity+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC4088EE2DAB4166005F341B /* RoleEntity+CoreDataProperties.swift */; };
-		DC4088F02DAB4166005F341B /* RoleEntity+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC4088ED2DAB4166005F341B /* RoleEntity+CoreDataClass.swift */; };
 		DCD20BD82DA8A2C700500652 /* RealTrackModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = DCD20BD62DA8A2C700500652 /* RealTrackModel.xcdatamodeld */; };
 /* End PBXBuildFile section */
 
@@ -43,30 +28,28 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		DC4088982DA9C4E4005F341B /* AddressEntity+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AddressEntity+CoreDataClass.swift"; sourceTree = "<group>"; };
-		DC4088992DA9C4E4005F341B /* AddressEntity+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AddressEntity+CoreDataProperties.swift"; sourceTree = "<group>"; };
-		DC40889A2DA9C4E4005F341B /* HouseAssociationEntity+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HouseAssociationEntity+CoreDataClass.swift"; sourceTree = "<group>"; };
-		DC40889B2DA9C4E4005F341B /* HouseAssociationEntity+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HouseAssociationEntity+CoreDataProperties.swift"; sourceTree = "<group>"; };
-		DC40889C2DA9C4E4005F341B /* HouseEntity+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HouseEntity+CoreDataClass.swift"; sourceTree = "<group>"; };
-		DC40889D2DA9C4E4005F341B /* HouseEntity+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HouseEntity+CoreDataProperties.swift"; sourceTree = "<group>"; };
-		DC40889E2DA9C4E4005F341B /* PersonEntity+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PersonEntity+CoreDataClass.swift"; sourceTree = "<group>"; };
-		DC40889F2DA9C4E4005F341B /* PersonEntity+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PersonEntity+CoreDataProperties.swift"; sourceTree = "<group>"; };
-		DC4088AA2DA9C73A005F341B /* BaseManagedObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseManagedObject.swift; sourceTree = "<group>"; };
-		DC4088AC2DAB1BDE005F341B /* NoteEntity+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NoteEntity+CoreDataClass.swift"; sourceTree = "<group>"; };
-		DC4088AD2DAB1BDE005F341B /* NoteEntity+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NoteEntity+CoreDataProperties.swift"; sourceTree = "<group>"; };
-		DC4088B02DAB1DA9005F341B /* OrganizationEntity+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrganizationEntity+CoreDataClass.swift"; sourceTree = "<group>"; };
-		DC4088B12DAB1DA9005F341B /* OrganizationEntity+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrganizationEntity+CoreDataProperties.swift"; sourceTree = "<group>"; };
-		DC4088ED2DAB4166005F341B /* RoleEntity+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "RoleEntity+CoreDataClass.swift"; sourceTree = "<group>"; };
-		DC4088EE2DAB4166005F341B /* RoleEntity+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "RoleEntity+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		DC79AB522D7505C300FCAF70 /* RealTrack.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RealTrack.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DC79AB642D7505C400FCAF70 /* RealTrackTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RealTrackTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		DC79AB6E2D7505C400FCAF70 /* RealTrackUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RealTrackUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		DCD20BD72DA8A2C700500652 /* RealTrackModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = RealTrackModel.xcdatamodel; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		DC4088F32DAF3132005F341B /* Exceptions for "RealTrack" folder in "RealTrack" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = DC79AB512D7505C300FCAF70 /* RealTrack */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		DC79AB542D7505C300FCAF70 /* RealTrack */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				DC4088F32DAF3132005F341B /* Exceptions for "RealTrack" folder in "RealTrack" target */,
+			);
 			path = RealTrack;
 			sourceTree = "<group>";
 		};
@@ -110,21 +93,6 @@
 		DC79AB492D7505C300FCAF70 = {
 			isa = PBXGroup;
 			children = (
-				DC4088ED2DAB4166005F341B /* RoleEntity+CoreDataClass.swift */,
-				DC4088EE2DAB4166005F341B /* RoleEntity+CoreDataProperties.swift */,
-				DC4088B02DAB1DA9005F341B /* OrganizationEntity+CoreDataClass.swift */,
-				DC4088B12DAB1DA9005F341B /* OrganizationEntity+CoreDataProperties.swift */,
-				DC4088AC2DAB1BDE005F341B /* NoteEntity+CoreDataClass.swift */,
-				DC4088AD2DAB1BDE005F341B /* NoteEntity+CoreDataProperties.swift */,
-				DC4088AA2DA9C73A005F341B /* BaseManagedObject.swift */,
-				DC4088982DA9C4E4005F341B /* AddressEntity+CoreDataClass.swift */,
-				DC4088992DA9C4E4005F341B /* AddressEntity+CoreDataProperties.swift */,
-				DC40889A2DA9C4E4005F341B /* HouseAssociationEntity+CoreDataClass.swift */,
-				DC40889B2DA9C4E4005F341B /* HouseAssociationEntity+CoreDataProperties.swift */,
-				DC40889C2DA9C4E4005F341B /* HouseEntity+CoreDataClass.swift */,
-				DC40889D2DA9C4E4005F341B /* HouseEntity+CoreDataProperties.swift */,
-				DC40889E2DA9C4E4005F341B /* PersonEntity+CoreDataClass.swift */,
-				DC40889F2DA9C4E4005F341B /* PersonEntity+CoreDataProperties.swift */,
 				DCD20BD62DA8A2C700500652 /* RealTrackModel.xcdatamodeld */,
 				DC79AB542D7505C300FCAF70 /* RealTrack */,
 				DC79AB672D7505C400FCAF70 /* RealTrackTests */,
@@ -287,21 +255,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DC4088B22DAB1DA9005F341B /* OrganizationEntity+CoreDataProperties.swift in Sources */,
-				DC4088B32DAB1DA9005F341B /* OrganizationEntity+CoreDataClass.swift in Sources */,
-				DC4088A02DA9C4E4005F341B /* HouseAssociationEntity+CoreDataClass.swift in Sources */,
-				DC4088AE2DAB1BDE005F341B /* NoteEntity+CoreDataClass.swift in Sources */,
-				DC4088AF2DAB1BDE005F341B /* NoteEntity+CoreDataProperties.swift in Sources */,
-				DC4088A12DA9C4E4005F341B /* PersonEntity+CoreDataClass.swift in Sources */,
-				DC4088AB2DA9C73C005F341B /* BaseManagedObject.swift in Sources */,
-				DC4088A22DA9C4E4005F341B /* PersonEntity+CoreDataProperties.swift in Sources */,
-				DC4088A32DA9C4E4005F341B /* HouseAssociationEntity+CoreDataProperties.swift in Sources */,
-				DC4088A42DA9C4E4005F341B /* HouseEntity+CoreDataClass.swift in Sources */,
-				DC4088A52DA9C4E4005F341B /* HouseEntity+CoreDataProperties.swift in Sources */,
-				DC4088A62DA9C4E4005F341B /* AddressEntity+CoreDataProperties.swift in Sources */,
-				DC4088EF2DAB4166005F341B /* RoleEntity+CoreDataProperties.swift in Sources */,
-				DC4088F02DAB4166005F341B /* RoleEntity+CoreDataClass.swift in Sources */,
-				DC4088A72DA9C4E4005F341B /* AddressEntity+CoreDataClass.swift in Sources */,
 				DCD20BD82DA8A2C700500652 /* RealTrackModel.xcdatamodeld in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -462,11 +415,14 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = RealTrack/RealTrack.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_ASSET_PATHS = "\"RealTrack/Preview Content\"";
+				DEVELOPMENT_TEAM = Q436M9KUZ4;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = RealTrack/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -491,11 +447,14 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = RealTrack/RealTrack.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_ASSET_PATHS = "\"RealTrack/Preview Content\"";
+				DEVELOPMENT_TEAM = Q436M9KUZ4;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = RealTrack/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
