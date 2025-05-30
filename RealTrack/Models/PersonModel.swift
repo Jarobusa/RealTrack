@@ -26,7 +26,11 @@ final class PersonModel {
     var personType: PersonTypeModel?
     
     // Replace the direct relationship with houses with a relationship to HouseAssociation.
-    @Relationship(inverse: \HouseAssociationModel.person) var houseAssociations: [HouseAssociationModel] = []
+    @Relationship(
+        deleteRule: .cascade,
+        inverse: \HouseAssociationModel.person)
+    
+    var houseAssociations: [HouseAssociationModel] = []
     
     init(
         id: UUID = UUID(),

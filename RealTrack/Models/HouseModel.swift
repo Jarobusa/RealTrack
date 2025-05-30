@@ -16,7 +16,12 @@ final class HouseModel {
     var timestamp: Date
     
     // Replace direct PersonModel relationship with HouseAssociation
-    @Relationship(inverse: \HouseAssociationModel.house) var associations: [HouseAssociationModel] = []
+    @Relationship(
+        deleteRule: .cascade,
+        inverse: \HouseAssociationModel.house
+    )
+    
+    var associations: [HouseAssociationModel] = []
 
     init(
         id: UUID = UUID(),
