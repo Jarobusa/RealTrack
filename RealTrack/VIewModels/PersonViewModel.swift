@@ -38,7 +38,6 @@ final class PersonViewModel: ObservableObject {
         email: String? = nil,
         ein: String? = nil,
         ssn: String? = nil,
-        personType: PersonTypeModel,
         homeAddress: AddressModel? = nil,
         workAddress: AddressModel? = nil
     ) {
@@ -50,7 +49,6 @@ final class PersonViewModel: ObservableObject {
             email: email,
             ein: ein,
             ssn: ssn,
-            personType: personType,
             homeAddress: homeAddress,
             workAddress: workAddress
         )

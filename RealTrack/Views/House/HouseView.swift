@@ -24,96 +24,8 @@ struct HouseView: View {
         NavigationStack {
             if let foundHouse = viewModel.findHouse(by: selectedHouse.id) {
                 ScrollView {
-                    VStack(alignment: .leading, spacing: 12) {
-                        // House Name displayed as plain text.
-                        if let name = foundHouse.name, !name.isEmpty {
-                            Text(name)
-                                .font(.title2)
-                                .bold()
-                        } else {
-                            Text("Unnamed House")
-                                .font(.title2)
-                                .bold()
-                        }
-
-                        // Address Details
-                        VStack(alignment: .leading, spacing: 4) {
-                            if let address1 = foundHouse.address.address1,
-                               let city = foundHouse.address.city,
-                               let state = foundHouse.address.state {
-                                let fullAddress = "\(address1), \(city), \(state)"
-                                if let encoded = fullAddress.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
-                                   let url = URL(string: "http://maps.apple.com/?q=\(encoded)") {
-                                    HStack(spacing: 4) {
-                                        // House image displayed separately
-                                        Image(systemName: "house")
-                                            .foregroundColor(.blue)
-                                        // Only the text is wrapped in a Link
-                                        Link(destination: url) {
-                                            Text(fullAddress)
-                                                .font(.subheadline)
-                                                .foregroundColor(.blue)
-                                        }
-                                        .buttonStyle(PlainButtonStyle())
-                                    }
-                                    .padding(.top, 4)
-                                }
-                            } else {
-                                Text("No Address")
-                                    .font(.subheadline)
-                            }
-                            
-                            // Optionally display address line 2
-                            if let address2 = foundHouse.address.address2, !address2.isEmpty {
-                                Text(address2)
-                                    .font(.subheadline)
-                            }
-                        }
-
-                        // Residents Section: Group people by personType
-                        if !viewModel.people(in: foundHouse).isEmpty {
-                            Divider()
-                            
-                            Text("People")
-                                .font(.title3)
-                                .padding(.top)
-                            Group {
-                                // Group people by their personType name (or "Unknown" if missing)
-                                let groupedPeople = Dictionary(grouping: viewModel.people(in: foundHouse)) { person in
-                                    person.personType?.name ?? "Unknown"
-                                }
-                                ForEach(groupedPeople.keys.sorted(), id: \.self) { typeKey in
-                                    VStack(alignment: .leading) {
-                                        Text(typeKey)
-                                            .font(.headline)
-                                            .padding(.vertical, 4)
-                                        ForEach(groupedPeople[typeKey] ?? [], id: \.id) { person in
-                                            NavigationLink(destination: PersonView(person: person)) {
-                                                VStack(alignment: .leading, spacing: 2) {
-                                                    Text("\(person.firstName ?? "") \(person.lastName ?? "")")
-                                                        .padding(.vertical, 2)
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                        
-                        // Divider separating house info from the last updated timestamp.
-                        Divider()
-                        
-                        // Last Updated
-                        HStack {
-                            Image(systemName: "calendar")
-                            Text("Last updated on \(foundHouse.timestamp.formatted(date: .abbreviated, time: .shortened))")
-                        }
-                        .font(.footnote)
-                        .foregroundColor(.secondary)
-                        
-                        Spacer()
-                    }
-                    .padding()
+                    HouseDetailsContent(foundHouse: foundHouse, viewModel: viewModel)
+                        .padding()
                 }
                 .navigationTitle("House Details")
                 .toolbar {
@@ -129,5 +41,102 @@ struct HouseView: View {
                     .italic()
             }
         }
+    }
+}
+
+// MARK: - HouseDetailsContent
+// Extract the main content of the HouseView into a separate subview.
+private struct HouseDetailsContent: View {
+    let foundHouse: HouseModel
+    @ObservedObject var viewModel: HouseViewModel // Use @ObservedObject for subview
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HouseNameView(name: foundHouse.name)
+            AddressDetailsView(address: foundHouse.address)
+
+            /*
+            if !viewModel.people(in: foundHouse).isEmpty {
+                Divider()
+                PeopleSectionView(people: viewModel.people(in: foundHouse))
+            }
+             */
+
+            Divider()
+            LastUpdatedView(timestamp: foundHouse.timestamp)
+
+            Spacer()
+        }
+    }
+}
+
+// MARK: - HouseNameView
+// Subview for displaying the house name.
+private struct HouseNameView: View {
+    let name: String?
+
+    var body: some View {
+        if let name = name, !name.isEmpty {
+            Text(name)
+                .font(.title2)
+                .bold()
+        } else {
+            Text("Unnamed House")
+                .font(.title2)
+                .bold()
+        }
+    }
+}
+
+// MARK: - AddressDetailsView
+// Subview for displaying address details and the map link.
+private struct AddressDetailsView: View {
+    let address: AddressModel // Assuming AddressModel is defined and accessible
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 4) {
+            if let address1 = address.address1,
+               let city = address.city,
+               let state = address.state {
+                let fullAddress = "\(address1), \(city), \(state)"
+                if let encoded = fullAddress.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
+                   let url = URL(string: "http://maps.apple.com/?q=\(encoded)") {
+                    HStack(spacing: 4) {
+                        Image(systemName: "house")
+                            .foregroundColor(.blue)
+                        Link(destination: url) {
+                            Text(fullAddress)
+                                .font(.subheadline)
+                                .foregroundColor(.blue)
+                        }
+                        .buttonStyle(PlainButtonStyle())
+                    }
+                    .padding(.top, 4)
+                }
+            } else {
+                Text("No Address")
+                    .font(.subheadline)
+            }
+
+            if let address2 = address.address2, !address2.isEmpty {
+                Text(address2)
+                    .font(.subheadline)
+            }
+        }
+    }
+}
+
+// MARK: - LastUpdatedView
+// Subview for displaying the last updated timestamp.
+private struct LastUpdatedView: View {
+    let timestamp: Date
+
+    var body: some View {
+        HStack {
+            Image(systemName: "calendar")
+            Text("Last updated on \(timestamp.formatted(date: .abbreviated, time: .shortened))")
+        }
+        .font(.footnote)
+        .foregroundColor(.secondary)
     }
 }

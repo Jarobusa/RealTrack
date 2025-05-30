@@ -13,14 +13,12 @@ struct EditPersonView: View {
 
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var context
-    @Query private var personTypes: [PersonTypeModel]
 
     @State private var firstName: String = ""
     @State private var lastName: String = ""
     @State private var mobilePhone: String = ""
     @State private var workPhone: String = ""
     @State private var email: String = ""
-    @State private var selectedType: PersonTypeModel?
     @State private var showInvalidEmailWarning = false
     @State private var hasChanges: Bool = false
     @State private var isInitialized = false
@@ -81,19 +79,7 @@ struct EditPersonView: View {
                             .foregroundColor(.red)
                     }
                 }
-
-                Section(header: Text("Person Type")) {
-                    Picker("Select Type", selection: $selectedType) {
-                        ForEach(personTypes) { type in
-                            Text(type.name ?? "Unknown")
-                                .tag(type as PersonTypeModel?)
-                        }
-                    }
-                    .onChange(of: selectedType) {
-                        if isInitialized { hasChanges = true }
-                    }
-                }
-
+            
                 Section(header: Text("Home Address")) {
                     TextField("Address 1", text: $homeAddress1)
                     TextField("Address 2", text: $homeAddress2)
@@ -148,7 +134,6 @@ struct EditPersonView: View {
                     }
                     .disabled(
                         firstName.isEmpty ||
-                        selectedType == nil ||
                         !hasChanges ||
                         (!email.isEmpty && !isValidEmail(email))
                     )
@@ -161,7 +146,6 @@ struct EditPersonView: View {
                 mobilePhone = person.mobilePhone ?? ""
                 workPhone = person.workPhone ?? ""
                 email = person.email ?? ""
-                selectedType = person.personType
                 
                 if let home = person.homeAddress {
                     homeAddress1 = home.address1 ?? ""
@@ -197,8 +181,7 @@ struct EditPersonView: View {
         person.mobilePhone = mobilePhone.isEmpty ? nil : mobilePhone
         person.workPhone = workPhone.isEmpty ? nil : workPhone
         person.email = email.isEmpty ? nil : email
-        person.personType = selectedType
-
+        
         // HOME
         let hasHomeData = [homeAddress1, homeAddress2, homeCity, homeState, homeZip].contains { !$0.isEmpty }
         if hasHomeData {
@@ -250,50 +233,5 @@ struct EditPersonView: View {
         } catch {
             print("❌ Error saving person: \(error)")
         }
-    }
-}
-
-#Preview {
-    do {
-        let container = try ModelContainer(
-            for: Schema([
-                PersonModel.self,
-                PersonTypeModel.self,
-                AddressModel.self,
-            ]),
-            configurations: [ModelConfiguration(isStoredInMemoryOnly: true)]
-        )
-
-        let personType = PersonTypeModel(name: "Owner")
-    
-        let person = PersonModel(
-            firstName: "Jane",
-            lastName: "Doe",
-            mobilePhone: "1234567890",
-            workPhone: "9876543210",
-            email: "jane@example.com",
-            ein: nil,
-            ssn: nil,
-            personType: personType
-        )
-
-        let address = AddressModel(
-            address1: "123 Main St",
-            address2: "Apt 4B",
-            city: "New York",
-            state: "NY",
-            zip: "10001"
-        )
-
-        container.mainContext.insert(personType)
-        container.mainContext.insert(person)
-        container.mainContext.insert(address)
-
-        return NavigationStack {
-            EditPersonView(person: person)
-        }
-        .modelContainer(container)
-    } catch {
-        fatalError("❌ Failed to create preview container: \(error)")
     }
 }

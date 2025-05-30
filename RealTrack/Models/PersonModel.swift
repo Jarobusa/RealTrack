@@ -23,7 +23,6 @@ final class PersonModel {
     
     var homeAddress: AddressModel?
     var workAddress: AddressModel?
-    var personType: PersonTypeModel?
     
     // Replace the direct relationship with houses with a relationship to HouseAssociation.
     @Relationship(
@@ -41,7 +40,6 @@ final class PersonModel {
         email: String? = nil,
         ein: String? = nil,
         ssn: String? = nil,
-        personType: PersonTypeModel,
         homeAddress: AddressModel? = nil,
         workAddress: AddressModel? = nil,
         timestamp: Date = .now
@@ -54,7 +52,6 @@ final class PersonModel {
         self.email = email
         self.ein = ein
         self.ssn = ssn
-        self.personType = personType
         self.homeAddress = homeAddress
         self.workAddress = workAddress
         self.timestamp = timestamp

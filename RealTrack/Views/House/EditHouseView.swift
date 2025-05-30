@@ -125,11 +125,6 @@ struct SelectPersonAssociationView: View {
                     VStack(alignment: .leading) {
                         Text("\(person.firstName ?? "") \(person.lastName ?? "")")
                             .font(.headline)
-                        if let typeName = person.personType?.name {
-                            Text("Type: \(typeName)")
-                                .font(.subheadline)
-                                .foregroundStyle(.secondary)
-                        }
                     }
                 }
             }

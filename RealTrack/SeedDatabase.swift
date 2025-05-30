@@ -5,6 +5,7 @@
 //  Created by Robert Williams on 3/24/25.
 //
 
+/*
 import Foundation
 import SwiftData
 
@@ -28,3 +29,4 @@ func seedPersonTypesIfNeeded(in context: ModelContext) {
         print("❌ Error seeding person types: \(error)")
     }
 }
+*/

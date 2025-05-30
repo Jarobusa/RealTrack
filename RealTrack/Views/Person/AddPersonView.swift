@@ -11,7 +11,6 @@ import SwiftData
 struct AddPersonView: View {
     @Environment(\.dismiss) private var dismiss
     @ObservedObject var viewModel: PersonViewModel
-    @Query private var personTypes: [PersonTypeModel]
 
     @State private var firstName = ""
     @State private var lastName = ""
@@ -19,7 +18,6 @@ struct AddPersonView: View {
     @State private var workPhone = ""
     @State private var ein = ""
     @State private var ssn = ""
-    @State private var selectedType: PersonTypeModel?
     @State private var selectedKind: AddressKind = .home
 
     @State private var showHomeAddress = true
@@ -69,15 +67,6 @@ struct AddPersonView: View {
                         }
                 }
 
-                Section(header: Text("Person Type")) {
-                    Picker("Select Type", selection: $selectedType) {
-                        ForEach(personTypes) { type in
-                            Text(type.name ?? "Unnamed").tag(type as PersonTypeModel?)
-                        }
-                    }
-                    .pickerStyle(.menu)
-                }
-
                 Section(header: Text("Address")) {
                     DisclosureGroup("Home Address", isExpanded: $showHomeAddress) {
                         TextField("Address 1", text: $homeAddress1)
@@ -122,14 +111,10 @@ struct AddPersonView: View {
                     Button("Save") {
                         savePerson()
                     }
-                    .disabled(firstName.isEmpty || selectedType == nil)
+                    .disabled(firstName.isEmpty)
                 }
             }
-            .onAppear {
-                if selectedType == nil {
-                    selectedType = personTypes.first
-                }
-            }
+          
         }
     }
 
@@ -159,7 +144,6 @@ struct AddPersonView: View {
             workPhone: workPhone.isEmpty ? nil : workPhone,
             ein: ein.isEmpty ? nil : ein,
             ssn: ssn.isEmpty ? nil : ssn,
-            personType: selectedType!,
             homeAddress: showHomeAddress ? homeAddress : nil,
             workAddress: showWorkAddress ? workAddress : nil
         )

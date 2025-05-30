@@ -33,10 +33,6 @@ struct PersonView: View {
                     if let email = person.email, !email.isEmpty {
                         Label(email, systemImage: "envelope")
                     }
-
-                    if let type = person.personType?.name {
-                        Label("Type: \(type)", systemImage: "person.crop.circle")
-                    }
                 }
 
                 Divider()
@@ -138,46 +134,5 @@ struct PersonView: View {
         if let url = URL(string: "http://maps.apple.com/?q=\(encoded)") {
             UIApplication.shared.open(url)
         }
-    }
-}
-
-struct PersonView_Previews: PreviewProvider {
-    static var previews: some View {
-        let container = try! ModelContainer(
-            for: PersonModel.self,
-            AddressModel.self,
-            PersonTypeModel.self,
-            configurations: ModelConfiguration(isStoredInMemoryOnly: true)
-        )
-
-        let personType = PersonTypeModel(name: "Renter")
-
-        let person = PersonModel(
-            firstName: "Jane",
-            lastName: "Doe",
-            mobilePhone: "1234567890",
-            workPhone: "9876543210",
-            email: "jane@example.com",
-            ein: "12-3456789",
-            ssn: "123-45-6789",
-            personType: personType
-        )
-
-        let address1 = AddressModel(address1: "123 Main St", city: "Boston", state: "MA", zip: "02118")
-
-        let address2 = AddressModel(address1: "456 Work Ave", address2: "Suite 500", city: "Cambridge", state: "MA", zip: "02139")
-
-        person.homeAddress = address1
-        person.workAddress = address2
-
-        container.mainContext.insert(personType)
-        container.mainContext.insert(person)
-        container.mainContext.insert(address1)
-        container.mainContext.insert(address2)
-
-        return NavigationStack {
-            PersonView(person: person)
-        }
-        .modelContainer(container)
     }
 }

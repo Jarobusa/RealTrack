@@ -18,8 +18,6 @@ struct PeopleView: View {
     enum SortOption: String, CaseIterable, Identifiable {
         case firstName = "First Name"
         case lastName = "Last Name"
-        case personType = "Type"
-
         var id: String { self.rawValue }
     }
 
@@ -41,11 +39,6 @@ struct PeopleView: View {
                                 .font(.headline)
                             if let phone = person.mobilePhone?.formattedAsPhone {
                                 Text("📱 \(phone)")
-                            }
-                            if let type = person.personType?.name {
-                                Text("Type: \(type)")
-                                    .font(.subheadline)
-                                    .foregroundStyle(.secondary)
                             }
                         }
                     }
@@ -73,51 +66,6 @@ struct PeopleView: View {
             return people.sorted { ($0.firstName ?? "") < ($1.firstName ?? "") }
         case .lastName:
             return people.sorted { ($0.lastName ?? "") < ($1.lastName ?? "") }
-        case .personType:
-            return people.sorted { ($0.personType?.name ?? "") < ($1.personType?.name ?? "") }
         }
-    }
-}
-
-struct PeopleView_Previews: PreviewProvider {
-    static var previews: some View {
-        let container = try! ModelContainer(
-            for: PersonModel.self,
-            PersonTypeModel.self,
-            configurations: ModelConfiguration(isStoredInMemoryOnly: true)
-        )
-
-        let type1 = PersonTypeModel(name: "Employee")
-        let type2 = PersonTypeModel(name: "Contractor")
-
-        let person1 = PersonModel(
-            firstName: "Alice",
-            lastName: "Johnson",
-            mobilePhone: "123-456-7890",
-            workPhone: nil,
-            email: nil,
-            ein: "12-3456789",
-            ssn: "123-45-6789",
-            personType: type1
-        )
-
-        let person2 = PersonModel(
-            firstName: "Bob",
-            lastName: "Smith",
-            mobilePhone: nil,
-            workPhone: "987-654-3210",
-            email: nil,
-            ein: nil,
-            ssn: nil,
-            personType: type2
-        )
-
-        container.mainContext.insert(type1)
-        container.mainContext.insert(type2)
-        container.mainContext.insert(person1)
-        container.mainContext.insert(person2)
-
-        return PeopleView()
-            .modelContainer(container)
     }
 }
