@@ -68,13 +68,13 @@ struct PersonView: View {
                         .foregroundStyle(.secondary)
                 }
 
-                if let house = house, !house.associations.isEmpty {
+                if let house = house, let associations = house.associations, !associations.isEmpty {
                     Divider()
                     Text("House Residents")
                         .font(.title2)
                         .padding(.top)
                     // Build a list of (association, resident) pairs excluding the current person
-                    let otherResidents = house.associations.compactMap { assoc -> (HouseAssociationModel, PersonModel)? in
+                    let otherResidents = associations.compactMap { assoc -> (HouseAssociationModel, PersonModel)? in
                         guard let resident = assoc.person else { return nil }
                         return resident.id == person.id ? nil : (assoc, resident)
                     }

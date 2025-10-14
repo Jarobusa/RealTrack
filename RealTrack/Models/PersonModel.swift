@@ -27,7 +27,7 @@ final class PersonModel {
     var workAddress: AddressModel?
     
     @Relationship
-    var houseAssociations: [HouseAssociationModel] = []
+    var houseAssociations: [HouseAssociationModel]? = []
     
     init(
         id: UUID? = UUID(),
@@ -40,7 +40,7 @@ final class PersonModel {
         ssn: String?,
         homeAddress: AddressModel?,
         workAddress: AddressModel?,
-        timestamp: Date = .now
+        timestamp: Date = Date()
     ) {
         self.id = id
         self.firstName = firstName

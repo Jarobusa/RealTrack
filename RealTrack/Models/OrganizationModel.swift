@@ -18,7 +18,7 @@ final class OrganizationModel {
     @Relationship(inverse: \AddressModel.organization) var address: AddressModel?
     var timestamp: Date = Date()
 
-    init(id: UUID? = UUID(), name: String? = nil, contactPhone: String? = nil, email: String? = nil, website: String? = nil, address: AddressModel? = nil, timestamp: Date = .now) {
+    init(id: UUID? = UUID(), name: String? = nil, contactPhone: String? = nil, email: String? = nil, website: String? = nil, address: AddressModel? = nil, timestamp: Date = Date()) {
         self.id = id
         self.name = name
         self.contactPhone = contactPhone

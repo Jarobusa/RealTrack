@@ -32,7 +32,7 @@ final class HouseViewModel: ObservableObject {
     /// - Parameter house: The house whose people should be listed.
     /// - Returns: An array of PersonModel instances associated with the house.
     func people(in house: HouseModel) -> [PersonModel] {
-        return house.associations.compactMap { $0.person }
+        return house.associations?.compactMap { $0.person } ?? []
     }
 
     /// Returns all houses.
@@ -75,8 +75,10 @@ final class HouseViewModel: ObservableObject {
         // For each linked person, create a HouseAssociation to record the relationship.
         for person in linkedPersons {
             let association = HouseAssociationModel(house: newHouse, person: person)
-            newHouse.associations.append(association)
-            person.houseAssociations.append(association)
+            if newHouse.associations == nil { newHouse.associations = [] }
+            newHouse.associations?.append(association)
+            if person.houseAssociations == nil { person.houseAssociations = [] }
+            person.houseAssociations?.append(association)
             context.insert(association)
         }
 

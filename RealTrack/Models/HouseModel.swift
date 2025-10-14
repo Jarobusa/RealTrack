@@ -15,13 +15,13 @@ final class HouseModel {
     @Relationship(inverse: \AddressModel.house) var address: AddressModel?
     var timestamp: Date = Date()
     
-    @Relationship var associations: [HouseAssociationModel] = []
+    @Relationship var associations: [HouseAssociationModel]? = []
 
     init(
         id: UUID? = UUID(),
         name: String? = nil,
         address: AddressModel? = nil,
-        timestamp: Date = .now
+        timestamp: Date = Date()
     ) {
         self.id = id
         self.name = name

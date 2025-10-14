@@ -19,8 +19,8 @@ final class AddressModel {
 
     @Relationship var house: HouseModel?
     @Relationship var organization: OrganizationModel?
-    @Relationship var homeResidents: [PersonModel] = []
-    @Relationship var workResidents: [PersonModel] = []
+    @Relationship var homeResidents: [PersonModel]? = []
+    @Relationship var workResidents: [PersonModel]? = []
 
     var timestamp: Date = Date()
     

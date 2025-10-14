@@ -50,7 +50,7 @@ struct EditHouseView: View {
             }
             
             Section(header: Text("Associations")) {
-                let associations = house.associations
+                let associations = house.associations ?? []
                 if associations.isEmpty {
                     Text("No associations yet.")
                         .foregroundColor(.secondary)
@@ -116,8 +116,10 @@ struct EditHouseView: View {
                     isActive: true,
                     role: nil
                 )
-                house.associations.append(newAssociation)
-                selectedPerson.houseAssociations.append(newAssociation)
+                if house.associations == nil { house.associations = [] }
+                house.associations?.append(newAssociation)
+                if selectedPerson.houseAssociations == nil { selectedPerson.houseAssociations = [] }
+                selectedPerson.houseAssociations?.append(newAssociation)
                 context.insert(newAssociation)
             }
         }
