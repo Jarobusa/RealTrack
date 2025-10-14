@@ -22,7 +22,7 @@ struct HouseView: View {
 
     var body: some View {
         NavigationStack {
-            if let foundHouse = viewModel.findHouse(by: selectedHouse.id) {
+            if let id = selectedHouse.id, let foundHouse = viewModel.findHouse(by: id) {
                 ScrollView {
                     HouseDetailsContent(foundHouse: foundHouse, viewModel: viewModel)
                         .padding()

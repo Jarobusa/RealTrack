@@ -50,11 +50,12 @@ struct EditHouseView: View {
             }
             
             Section(header: Text("Associations")) {
-                if house.associations.isEmpty {
+                let associations = house.associations
+                if associations.isEmpty {
                     Text("No associations yet.")
                         .foregroundColor(.secondary)
                 } else {
-                    ForEach(house.associations, id: \.id) { association in
+                    ForEach(associations, id: \.id) { association in
                         VStack(alignment: .leading) {
                             let p = association.person
                             Text("\(p?.firstName ?? "") \(p?.lastName ?? "")")
@@ -109,8 +110,14 @@ struct EditHouseView: View {
         }
         .sheet(isPresented: $showAddAssociationSheet) {
             SelectPersonAssociationView { selectedPerson in
-                let newAssociation = HouseAssociationModel(house: house, person: selectedPerson, isActive: true, role: nil)
+                let newAssociation = HouseAssociationModel(
+                    house: house,
+                    person: selectedPerson,
+                    isActive: true,
+                    role: nil
+                )
                 house.associations.append(newAssociation)
+                selectedPerson.houseAssociations.append(newAssociation)
                 context.insert(newAssociation)
             }
         }
@@ -147,4 +154,3 @@ struct SelectPersonAssociationView: View {
         }
     }
 }
-

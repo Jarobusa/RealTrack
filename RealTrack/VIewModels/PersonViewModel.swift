@@ -105,7 +105,7 @@ final class PersonViewModel: ObservableObject {
            
            do {
                let matchingPeople = try modelContext.fetch(descriptor)
-               print("✅ Found \(matchingPeople.count) people linked to address ID: \(addressID)")
+               print("✅ Found \(matchingPeople.count) people linked to address ID: \(addressID?.uuidString ?? "nil")")
                return matchingPeople
            } catch {
                print("❌ Error finding people by address: \(error.localizedDescription)")
@@ -113,3 +113,4 @@ final class PersonViewModel: ObservableObject {
            }
        }
 }
+

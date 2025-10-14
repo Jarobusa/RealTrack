@@ -10,29 +10,27 @@ import SwiftData
 
 @Model
 final class PersonModel {
-    @Attribute(.unique) var id: UUID
+    var id: UUID? = UUID()
     var firstName: String?
     var lastName: String?
     var mobilePhone: String?
     var workPhone: String?
     var email: String?
-    var timestamp: Date
+    var timestamp: Date = Date()
 
-    @Attribute(.unique) var ein: String?
-    @Attribute(.unique) var ssn: String?
+    var ein: String?
+    var ssn: String?
     
+    @Relationship(inverse: \AddressModel.homeResidents)
     var homeAddress: AddressModel?
+    @Relationship(inverse: \AddressModel.workResidents)
     var workAddress: AddressModel?
     
-    // Replace the direct relationship with houses with a relationship to HouseAssociation.
-    @Relationship(
-        deleteRule: .cascade,
-        inverse: \HouseAssociationModel.person)
-    
+    @Relationship
     var houseAssociations: [HouseAssociationModel] = []
     
     init(
-        id: UUID = UUID(),
+        id: UUID? = UUID(),
         firstName: String?,
         lastName: String?,
         mobilePhone: String?,

@@ -76,6 +76,7 @@ final class HouseViewModel: ObservableObject {
         for person in linkedPersons {
             let association = HouseAssociationModel(house: newHouse, person: person)
             newHouse.associations.append(association)
+            person.houseAssociations.append(association)
             context.insert(association)
         }
 

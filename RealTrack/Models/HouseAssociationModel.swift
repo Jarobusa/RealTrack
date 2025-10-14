@@ -5,19 +5,19 @@
 //  Created by Robert Williams on 4/6/25.
 //
 
-import SwiftData
 import Foundation
+import SwiftData
 
 @Model
 final class HouseAssociationModel {
-    @Attribute(.unique) var id: UUID
+    var id: UUID? = UUID()
     var isActive: Bool = true
     var role: String?
     
-    var house: HouseModel?
-    var person: PersonModel?
+    @Relationship(inverse: \HouseModel.associations) var house: HouseModel?
+    @Relationship(inverse: \PersonModel.houseAssociations) var person: PersonModel?
 
-    init(house: HouseModel, person: PersonModel, isActive: Bool = true, role: String? = nil) {
+    init(house: HouseModel? = nil, person: PersonModel? = nil, isActive: Bool = true, role: String? = nil) {
         self.id = UUID()
         self.house = house
         self.person = person

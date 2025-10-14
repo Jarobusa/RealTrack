@@ -10,23 +10,17 @@ import SwiftData
 
 @Model
 final class HouseModel {
-    @Attribute(.unique) var id: UUID
+    var id: UUID? = UUID()
     var name: String?
-    var address: AddressModel?
-    var timestamp: Date
+    @Relationship(inverse: \AddressModel.house) var address: AddressModel?
+    var timestamp: Date = Date()
     
-    // Replace direct PersonModel relationship with HouseAssociation
-    @Relationship(
-        deleteRule: .cascade,
-        inverse: \HouseAssociationModel.house
-    )
-    
-    var associations: [HouseAssociationModel] = []
+    @Relationship var associations: [HouseAssociationModel] = []
 
     init(
-        id: UUID = UUID(),
-        name: String,
-        address: AddressModel,
+        id: UUID? = UUID(),
+        name: String? = nil,
+        address: AddressModel? = nil,
         timestamp: Date = .now
     ) {
         self.id = id
