@@ -11,31 +11,40 @@ import SwiftData
 
 @main
 struct RealTrackApp: App {
-    // Shared SwiftData container configured for CloudKit sync
+
     let container: ModelContainer = {
-        // Register your @Model types here
         let schema = Schema([
             AddressModel.self,
             HouseModel.self,
             HouseAssociationModel.self,
             OrganizationModel.self,
             PersonModel.self
-            
-            // add additional models as needed
         ])
         let config = ModelConfiguration(
             schema: schema,
             isStoredInMemoryOnly: false,
             cloudKitDatabase: .automatic
         )
-        // Force-unwrap is okay if your schema/config is valid
-        return try! ModelContainer(for: schema, configurations: [config])
+        
+        do {
+             let container = try ModelContainer(for: schema, configurations: [config])
+             
+             // --- ADDED CODE TO PRINT DATABASE LOCATION ---
+             if let url = container.configurations.first?.url {
+                 print("SwiftData SQLite database location: \(url.path)")
+             } else {
+                 print("Could not determine SwiftData SQLite database location.")
+             }
+             // --- END ADDED CODE ---
+             
+             return container
+         } catch {
+             fatalError("Failed to create ModelContainer: \(error)")
+         }
     }()
 
     init() {
-        // Seed initial PersonTypes if needed, using SwiftData’s context
         _ = container.mainContext
-      //  seedPersonTypesIfNeeded(in: context)
     }
 
     var body: some Scene {

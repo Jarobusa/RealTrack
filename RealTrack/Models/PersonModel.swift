@@ -33,15 +33,15 @@ final class PersonModel {
     
     init(
         id: UUID = UUID(),
-        firstName: String,
-        lastName: String? = nil,
-        mobilePhone: String? = nil,
-        workPhone: String? = nil,
-        email: String? = nil,
-        ein: String? = nil,
-        ssn: String? = nil,
-        homeAddress: AddressModel? = nil,
-        workAddress: AddressModel? = nil,
+        firstName: String?,
+        lastName: String?,
+        mobilePhone: String?,
+        workPhone: String?,
+        email: String?,
+        ein: String?,
+        ssn: String?,
+        homeAddress: AddressModel?,
+        workAddress: AddressModel?,
         timestamp: Date = .now
     ) {
         self.id = id

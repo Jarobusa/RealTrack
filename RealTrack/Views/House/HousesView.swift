@@ -30,9 +30,15 @@ struct HousessView: View {
                     VStack(alignment: .leading) {
                         Text(house.name ?? "Unnamed")
                             .font(.headline)
-                        Text("\(house.address.address1 ?? "No address"), \(house.address.city ?? "No city"), \(house.address.state ?? "No state")")
-                            .font(.subheadline)
-                            .foregroundStyle(.secondary)
+                        if let addr = house.address {
+                            Text("\(addr.address1 ?? "No address"), \(addr.city ?? "No city"), \(addr.state ?? "No state")")
+                                .font(.subheadline)
+                                .foregroundStyle(.secondary)
+                        } else {
+                            Text("No address")
+                                .font(.subheadline)
+                                .foregroundStyle(.secondary)
+                        }
                     }
                 }
                 .swipeActions {
@@ -83,3 +89,4 @@ struct HousesView_Previews: PreviewProvider {
         return HousessView(modelContext: modelContext, viewModel: mockViewModel)
     }
 }
+

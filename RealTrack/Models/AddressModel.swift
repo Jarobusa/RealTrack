@@ -17,7 +17,7 @@ final class AddressModel {
     var state: String?
     var zip: String?
     var timestamp: Date
-
+    
     init(id: UUID = UUID(), address1: String? = nil, address2: String? = nil,
          city: String? = nil, state: String? = nil, zip: String? = nil,
          timestamp: Date = Date()) {

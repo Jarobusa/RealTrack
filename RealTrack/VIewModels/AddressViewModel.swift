@@ -5,9 +5,11 @@
 //  Created by Robert Williams on 3/2/25.
 //
 
+import Foundation
+import Combine
 import SwiftData
-import SwiftUI
 
+@MainActor
 final class AddressViewModel: ObservableObject {
     @Published var addresses: [AddressModel] = []
     private var modelContext: ModelContext
@@ -23,14 +25,14 @@ final class AddressViewModel: ObservableObject {
         )
         do {
             addresses = try modelContext.fetch(fetchDescriptor)
-            print("✅ Fetched addresses: \(addresses.map { $0.address1 ?? "N/A" })")
+            let labels = addresses.map { $0.address1 ?? "N/A" }
+            print("✅ Fetched addresses: \(labels)")
         } catch {
             print("❌ Fetch error: \(error.localizedDescription)")
             addresses = []
         }
         
-        if let storeURL = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first?
-            .appendingPathComponent("default.store") {
+        if let storeURL = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first?.appendingPathComponent("default.store") {
             print("📂 SQLite database path: \(storeURL.path)")
         }
     }
@@ -79,18 +81,15 @@ final class AddressViewModel: ObservableObject {
     
     /// Returns all people who have the specified address as either their home or work address
     func findPeopleByAddress(_ address: AddressModel) -> [PersonModel] {
-        // When using UUIDs, we can use the ID directly for filtering
-        let addressID = address.id
-        
+        let targetID = address.id
         let descriptor = FetchDescriptor<PersonModel>(
             predicate: #Predicate<PersonModel> { person in
-                (person.homeAddress?.id == addressID) || (person.workAddress?.id == addressID)
+                (person.homeAddress?.id == targetID) || (person.workAddress?.id == targetID)
             }
         )
-        
         do {
             let matchingPeople = try modelContext.fetch(descriptor)
-            print("✅ Found \(matchingPeople.count) people linked to address ID: \(addressID)")
+            print("✅ Found \(matchingPeople.count) people linked to address")
             return matchingPeople
         } catch {
             print("❌ Error finding people by address: \(error.localizedDescription)")
@@ -100,22 +99,20 @@ final class AddressViewModel: ObservableObject {
     
     /// Returns all houses that have the specified address
     func findHousesByAddress(_ address: AddressModel) -> [HouseModel] {
-        // When using UUIDs, we can use the ID directly for filtering
-        let addressID = address.id
-        
+        let targetID = address.id
         let descriptor = FetchDescriptor<HouseModel>(
             predicate: #Predicate<HouseModel> { house in
-                house.address.id == addressID
+                house.address?.id == targetID
             }
         )
-        
         do {
             let matchingHouses = try modelContext.fetch(descriptor)
-            print("✅ Found \(matchingHouses.count) houses linked to address ID: \(addressID)")
+            print("✅ Found \(matchingHouses.count) houses linked to address")
             return matchingHouses
         } catch {
-            print("❌ Error finding people by address: \(error.localizedDescription)")
+            print("❌ Error finding houses by address: \(error.localizedDescription)")
             return []
         }
     }
 }
+

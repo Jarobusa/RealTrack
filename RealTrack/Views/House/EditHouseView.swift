@@ -28,11 +28,11 @@ struct EditHouseView: View {
     init(house: HouseModel) {
         self.house = house
         _houseName = State(initialValue: house.name ?? "")
-        _address1 = State(initialValue: house.address.address1 ?? "")
-        _address2 = State(initialValue: house.address.address2 ?? "")
-        _city = State(initialValue: house.address.city ?? "")
-        _state = State(initialValue: house.address.state ?? "")
-        _zip = State(initialValue: house.address.zip ?? "")
+        _address1 = State(initialValue: house.address?.address1 ?? "")
+        _address2 = State(initialValue: house.address?.address2 ?? "")
+        _city = State(initialValue: house.address?.city ?? "")
+        _state = State(initialValue: house.address?.state ?? "")
+        _zip = State(initialValue: house.address?.zip ?? "")
     }
 
     var body: some View {
@@ -56,7 +56,8 @@ struct EditHouseView: View {
                 } else {
                     ForEach(house.associations, id: \.id) { association in
                         VStack(alignment: .leading) {
-                            Text("\(association.person.firstName ?? "") \(association.person.lastName ?? "")")
+                            let p = association.person
+                            Text("\(p?.firstName ?? "") \(p?.lastName ?? "")")
                                 .font(.headline)
                             if let role = association.role, !role.isEmpty {
                                 Text("Role: \(role)")
@@ -83,11 +84,18 @@ struct EditHouseView: View {
                 Button("Save") {
                     // Update the house model with edited values
                     house.name = houseName
-                    house.address.address1 = address1
-                    house.address.address2 = address2.isEmpty ? nil : address2
-                    house.address.city = city
-                    house.address.state = state
-                    house.address.zip = zip
+
+                    // Ensure there is an AddressModel to edit
+                    if house.address == nil {
+                        house.address = AddressModel(address1: nil, address2: nil, city: nil, state: nil, zip: nil, timestamp: Date())
+                    }
+
+                    // Now update the address fields
+                    house.address?.address1 = address1
+                    house.address?.address2 = address2.isEmpty ? nil : address2
+                    house.address?.city = city
+                    house.address?.state = state
+                    house.address?.zip = zip
 
                     // Save changes via the model context
                     do {
@@ -139,3 +147,4 @@ struct SelectPersonAssociationView: View {
         }
     }
 }
+

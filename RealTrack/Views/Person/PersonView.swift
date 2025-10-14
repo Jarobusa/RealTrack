@@ -8,6 +8,7 @@
 import SwiftUI
 import SwiftData
 import MapKit
+import Foundation
 
 struct PersonView: View {
     let person: PersonModel
@@ -15,35 +16,50 @@ struct PersonView: View {
 
     @State private var isEditing = false
 
+    private func makeDisplayName(from person: PersonModel) -> String {
+        [person.firstName, person.lastName]
+            .compactMap { $0?.trimmingCharacters(in: .whitespacesAndNewlines) }
+            .filter { !$0.isEmpty }
+            .joined(separator: " ")
+    }
+
+    private func hasAnyAddressData(_ address: AddressModel) -> Bool {
+        let parts = [address.address1, address.address2, address.city, address.state, address.zip]
+        return parts.contains { ($0 ?? "").isEmpty == false }
+    }
+
     var body: some View {
+        let displayName = makeDisplayName(from: person)
+        
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
                 Group {
-                    Text("\(person.firstName ?? "") \(person.lastName ?? "")")
+                    Text(displayName)
                         .font(.title.bold())
 
-                    if let mobile = person.mobilePhone?.formattedAsPhone, !(person.mobilePhone ?? "").isEmpty {
+                    let mobile = person.mobilePhone?.formattedAsPhone
+                    if let mobile, !mobile.isEmpty {
                         Label(mobile, systemImage: "phone")
                     }
 
-                    if let work = person.workPhone?.formattedAsPhone, !(person.workPhone ?? "").isEmpty {
+                    let work = person.workPhone?.formattedAsPhone
+                    if let work, !work.isEmpty {
                         Label(work, systemImage: "phone.fill")
                     }
                     
-                    if let email = person.email, !email.isEmpty {
+                    let email = person.email
+                    if let email, !email.isEmpty {
                         Label(email, systemImage: "envelope")
                     }
                 }
 
                 Divider()
 
-                if let home = person.homeAddress,
-                   [home.address1, home.address2, home.city, home.state, home.zip].contains(where: { ($0 ?? "").isEmpty == false }) {
+                if let home = person.homeAddress, hasAnyAddressData(home) {
                     addressButton(for: home, title: "Home Address")
                 }
 
-                if let work = person.workAddress,
-                   [work.address1, work.address2, work.city, work.state, work.zip].contains(where: { ($0 ?? "").isEmpty == false }) {
+                if let work = person.workAddress, hasAnyAddressData(work) {
                     addressButton(for: work, title: "Work Address")
                 }
 
@@ -57,14 +73,18 @@ struct PersonView: View {
                     Text("House Residents")
                         .font(.title2)
                         .padding(.top)
-                    ForEach(house.associations, id: \.id) { association in
-                        let resident = association.person
-                        // Exclude the current person from the list
-                        if resident.id != person.id {
-                            NavigationLink(destination: PersonView(person: resident, house: house)) {
-                                Text("\(resident.firstName ?? "") \(resident.lastName ?? "")")
-                                    .padding(.vertical, 4)
-                            }
+                    // Build a list of (association, resident) pairs excluding the current person
+                    let otherResidents = house.associations.compactMap { assoc -> (HouseAssociationModel, PersonModel)? in
+                        guard let resident = assoc.person else { return nil }
+                        return resident.id == person.id ? nil : (assoc, resident)
+                    }
+
+                    // Use the association's id as a stable identifier
+                    ForEach(otherResidents, id: \.0.id) { pair in
+                        let resident = pair.1
+                        NavigationLink(destination: PersonView(person: resident, house: house)) {
+                            Text("\(resident.firstName ?? "") \(resident.lastName ?? "")")
+                                .padding(.vertical, 4)
                         }
                     }
                 }

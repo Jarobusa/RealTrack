@@ -53,14 +53,12 @@ private struct HouseDetailsContent: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             HouseNameView(name: foundHouse.name)
-            AddressDetailsView(address: foundHouse.address)
-
-            /*
-            if !viewModel.people(in: foundHouse).isEmpty {
-                Divider()
-                PeopleSectionView(people: viewModel.people(in: foundHouse))
+            if let address = foundHouse.address {
+                AddressDetailsView(address: address)
+            } else {
+                Text("No Address")
+                    .font(.subheadline)
             }
-             */
 
             Divider()
             LastUpdatedView(timestamp: foundHouse.timestamp)

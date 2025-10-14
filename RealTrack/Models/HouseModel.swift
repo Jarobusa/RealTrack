@@ -12,7 +12,7 @@ import SwiftData
 final class HouseModel {
     @Attribute(.unique) var id: UUID
     var name: String?
-    var address: AddressModel
+    var address: AddressModel?
     var timestamp: Date
     
     // Replace direct PersonModel relationship with HouseAssociation
