@@ -1,0 +1,20 @@
+meta {
+  name: Search Person By Email
+  type: http
+  seq: 2
+}
+
+vars {
+  email: {{sampleEmail}}
+}
+
+request {
+  method: GET
+  url: {{baseUrl}}/persons
+  query {
+    email: {{email}}
+  }
+  headers {
+    Accept: application/json
+  }
+}

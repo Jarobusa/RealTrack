@@ -1,0 +1,22 @@
+meta {
+  name: Search Persons By Last Name
+  type: http
+  seq: 3
+}
+
+vars {
+  lastName: {{sampleLastName}}
+  prefix: false
+}
+
+request {
+  method: GET
+  url: {{baseUrl}}/persons
+  query {
+    lastName: {{lastName}}
+    prefix: {{prefix}}
+  }
+  headers {
+    Accept: application/json
+  }
+}

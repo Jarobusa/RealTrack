@@ -1,0 +1,27 @@
+meta {
+  name: Create Person
+  type: http
+  seq: 4
+}
+
+vars {
+  firstName: Ava
+  lastName: Agent
+  email: ava.agent@example.com
+  phone: +1-555-0100
+}
+
+request {
+  method: POST
+  url: {{baseUrl}}/persons
+  headers {
+    Content-Type: application/json
+    Accept: application/json
+  }
+  body (json) {
+    FirstName: "{{firstName}}"
+    LastName: "{{lastName}}"
+    Email: "{{email}}"
+    Phone: "{{phone}}"
+  }
+}

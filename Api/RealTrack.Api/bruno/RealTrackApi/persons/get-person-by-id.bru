@@ -1,0 +1,17 @@
+meta {
+  name: Get Person By Id
+  type: http
+  seq: 1
+}
+
+vars {
+  personId: {{samplePersonId}}
+}
+
+request {
+  method: GET
+  url: {{baseUrl}}/persons/{{personId}}
+  headers {
+    Accept: application/json
+  }
+}

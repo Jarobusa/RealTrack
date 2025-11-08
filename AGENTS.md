@@ -1,6 +1,7 @@
 # Repository Guidelines
 
 ## Project Structure & Module Organization
+- RealTrack is a property management app for rental houses, shared across partners and agencies; keep API, clients, and infra changes in sync so properties/people/addresses remain consistent.
 - `Api/RealTrack.Api` contains the .NET minimal API, AWS SAM template, and config (`appsettings*.json`); treat `Program.cs` as the routing hub and keep Lambda glue (`LambdaEntryPoint`) slim.
 - `RealTrackApple/RealTrack` hosts the SwiftUI app, with `Views/`, `ViewModels/`, and `Models/` mirroring each feature; shared data lives in `RealTrackEntities/` and previews/assets in `Preview Content/` and `Assets.xcassets`.
 - `RealTrackReact/infrastructure` currently tracks CloudFormation for the DynamoDB single-table design; add future web or script modules alongside it with a README that explains how they consume the table.
@@ -11,6 +12,11 @@
 - `sam local start-api --parameter-overrides TableName=RealTrackDev` → emulate the Lambda entry point (requires Docker).
 - `open RealTrackApple/RealTrack.xcodeproj` or `xcodebuild -scheme RealTrack -destination "platform=iOS Simulator,name=iPhone 15"` → build the iOS client; append `test` to run the suites.
 - `cfn-lint RealTrackReact/infrastructure/dynamodb-person.yml` and `aws cloudformation deploy ...` → validate and ship infra changes; substitute the stack name per environment.
+
+## API Exploration (Bruno)
+- Open `Api/RealTrack.Api/bruno/RealTrackApi` in Bruno to get ready-made requests for the `/persons` endpoints.
+- Load the `local.bru` environment so `{{baseUrl}}` resolves to `http://localhost:5233`; override sample IDs/emails inside the request-level `vars` blocks when needed.
+- Requests cover: GET by ID, search by email, search by last name (with optional prefix), and POST to create a person—mirroring `PersonEndpoints.cs`.
 
 ## Coding Style & Naming Conventions
 - C#: target C# 12 features (primary constructors, collection expressions) where they clarify intent; use 4-space indentation, `var` for obvious types, preserve `TENANT#...`/`PER_...` key patterns, and run `dotnet format` before committing.
