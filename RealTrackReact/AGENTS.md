@@ -1,22 +1,28 @@
 # Repository Guidelines
 
 ## Project Structure & Module Organization
-All infrastructure-as-code currently lives in `infrastructure/`. The `dynamodb-person.yml` CloudFormation template provisions the multi-tenant DynamoDB table (PK/SK primary key plus `GSI1`/`GSI2`) and its PITR backup resource. Keep new templates in the same folder, one file per stack, and group shared parameters (such as `TableName`) near the top so automation scripts can override them. When adding service-specific assets (React app, Lambda handlers, etc.), mirror the folder name (`web/`, `lambdas/`, `scripts/`) and include a README explaining how it integrates with the table schema.
+- `package.json`, `App.tsx`, and the `src/` tree form the Expo-managed React (web) client. Keep UI logic inside feature-specific components under `src/components/` and API helpers under `src/lib/`.
+- Expo config lives in `app.config.ts`; it exposes `extra.apiUrl`, derived from `EXPO_PUBLIC_REALTRACK_API_URL`, so the app can point at any RealTrack.Api surface without code changes.
+- Infrastructure-as-code remains in `infrastructure/`. The `dynamodb-person.yml` template provisions the multi-tenant DynamoDB table plus PITR. Keep one template per stack and centralize reusable parameters (`TableName`, billing mode, etc.) at the top of each file.
 
 ## Build, Test, and Development Commands
-- `cfn-lint infrastructure/dynamodb-person.yml` — static analysis for schema, property names, and region support.
-- `aws cloudformation validate-template --template-body file://infrastructure/dynamodb-person.yml` — confirms the rendered template is syntactically correct before deployment.
-- `aws cloudformation deploy --template-file infrastructure/dynamodb-person.yml --stack-name realtrack-dynamodb --parameter-overrides TableName=RealTrack` — provisions or updates the table; adjust `TableName` per environment.
-Wrap these commands in a `make` or `npm` script only after verifying they succeed locally with AWS credentials configured via `aws configure sso` or environment variables.
+- `npm install` (run inside `RealTrackReact/`) — installs Expo/React dependencies.
+- `npm run web` — launches the Expo dev server in web mode; ensure `EXPO_PUBLIC_REALTRACK_API_URL` is set (defaults to `http://localhost:5233`).
+- `npm run typecheck` — TypeScript `--noEmit` pass for the Expo client; keep it green before pushing UI changes.
+- `cfn-lint infrastructure/dynamodb-person.yml`, `aws cloudformation validate-template`, `aws cloudformation deploy ...` — continue to use these for DynamoDB infrastructure work; document the exact parameters in your PR.
 
 ## Coding Style & Naming Conventions
-Use two-space indentation and lowercase keys for CloudFormation intrinsic functions (`!Ref`, `!GetAtt` as shown). Resource logical IDs stay in PascalCase (`RealTrackTable`, `RealTrackPITR`) and align with what the AWS console will display. Attribute names inside the single-table schema follow the established abbreviations (`PK`, `SK`, `GSI1PK`, `GSI1SK`, etc.); do not introduce new prefixes without documenting them in comments near the attribute definitions. Keep sections ordered logically: `Parameters`, `Resources`, `Outputs`.
+- React: TypeScript-first, functional components only, hooks for state, and StyleSheet objects for styling (no inline anonymous styles unless dynamic). Keep fetch logic isolated in `src/lib/api.ts`.
+- Expo env vars must be prefixed with `EXPO_PUBLIC_`. Reference them via `process.env.EXPO_PUBLIC_*` or `Constants.expoConfig.extra`.
+- CloudFormation files stay 2-space indented with PascalCase logical IDs and the existing attribute prefixes (`PK`, `SK`, `GSI1PK`, etc.).
 
 ## Testing Guidelines
-Run `cfn-lint` on every change, and block commits if lint errors appear. Use `aws dynamodb describe-table --table-name <deployed-name>` after deployment to confirm billing mode, GSIs, and PITR settings match expectations. For schema migrations, stage updates in a throwaway stack (`realtrack-dynamodb-sandbox`) and capture API responses to attach to PRs. Name any future Jest or integration test files `<feature>.test.ts` to align with common React tooling.
+- For the Expo client rely on `npm run typecheck` plus manual verification via `npm run web`. Add Jest or integration tests under `src/__tests__/` if components gain complex logic.
+- Infra changes: run `cfn-lint` on every change and verify deployed tables with `aws dynamodb describe-table --table-name <name>` before merging. Capture relevant CLI output for PRs.
 
 ## Commit & Pull Request Guidelines
-Git history shows the `#REA-###` ticket prefix followed by a concise action (`#REA-16 fix compiler errors`). Continue that format, using imperative mood and keeping the summary under 72 characters. Each PR should include: context (what changed and why), testing notes (commands run, stack ARNs touched), screenshots or CLI output for infrastructure diffs, and links to the matching tracker issue. Request at least one reviewer familiar with the DynamoDB schema before merging.
+Prefix commits with `#REA-### action`, mirroring the rest of the monorepo. PRs should describe UI screenshots or screen recordings for the Expo app, the RealTrack.Api environment hit during testing, and any infrastructure changes. Include `npm run typecheck`, `npm run web`, and CloudFormation commands (if touched) in the validation checklist.
 
 ## Security & Configuration Tips
-Never hardcode ARNs, keys, or table names; rely on parameters or SSM references so the same template works across tenants. Leave `BillingMode: PAY_PER_REQUEST` unless there is a documented capacity plan, and keep `SSESpecification` enabled—these defaults are part of the compliance baseline. Remove temporary GSIs or debugging attributes immediately after experiments and document any schema changes in the PR description.
+- Never hardcode base URLs or credentials; use `EXPO_PUBLIC_REALTRACK_API_URL` for the Expo app and CloudFormation parameters/SSM for infrastructure.
+- Keep DynamoDB encryption/PITR enabled in templates, and remove experimental GSIs immediately after use. Document any new environment variables or secrets handling steps in both the PR and `AGENTS.md`.

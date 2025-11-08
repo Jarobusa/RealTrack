@@ -46,6 +46,16 @@ xcuserdata/
 *.tmp
 *.xcuserstate
 
+# JavaScript / Expo
+node_modules/
+.expo/
+dist/
+web-build/
+*.env.local
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
 # .NET build artifacts
 bin/
 obj/
