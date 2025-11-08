@@ -1,0 +1,16 @@
+version = 0.1
+
+[default.deploy.parameters]
+stack_name = "realtrack-api"
+resolve_s3 = true
+s3_prefix = "realtrack-api"
+region = "us-east-1"
+profile = "Robbie_Williams"
+confirm_changeset = true
+capabilities = "CAPABILITY_IAM"
+disable_rollback = true
+parameter_overrides = "TableName=\"RealTrack\""
+image_repositories = []
+
+[default.global.parameters]
+region = "us-east-1"

@@ -1,0 +1,35 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: RealTrack API (.NET 8 Minimal API on Lambda)
+
+Parameters:
+  TableName:
+    Type: String
+    Default: RealTrack
+
+Resources:
+  ApiFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: RealTrackApi
+      CodeUri: .
+      Runtime: dotnet8
+      Handler: RealTrack.Api
+      MemorySize: 512
+      Timeout: 30
+      Environment:
+        Variables:
+          DDB_TABLE: !Ref TableName
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref TableName
+      Events:
+        HttpApi:
+          Type: HttpApi
+          Properties:
+            Path: /{proxy+}
+            Method: ANY
+
+Outputs:
+  ApiUrl:
+    Value: !Sub "https://${ServerlessHttpApi}.execute-api.${AWS::Region}.amazonaws.com"

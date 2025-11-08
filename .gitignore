@@ -45,3 +45,9 @@ xcuserdata/
 *.swp
 *.tmp
 *.xcuserstate
+
+# .NET build artifacts
+bin/
+obj/
+**/bin/
+**/obj/
